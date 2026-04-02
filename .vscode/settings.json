@@ -5,5 +5,8 @@
   },
   "files.associations": {
     "*.css": "tailwindcss"
-  }
+  },
+  "cSpell.words": [
+    "Nextdotjs"
+  ]
 }
