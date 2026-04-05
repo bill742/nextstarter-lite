@@ -1,9 +1,9 @@
 import "./globals.css";
 
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
-// import * as React from "react";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import SkipNav from "@/components/skip-nav";
@@ -65,6 +65,7 @@ const RootLayout = ({
           {children}
           <Footer />
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
