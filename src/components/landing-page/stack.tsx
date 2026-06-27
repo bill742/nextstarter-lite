@@ -1,7 +1,10 @@
 import {
+  SiClerk,
   SiEslint,
+  SiGithubactions,
   SiNextdotjs,
   SiPrettier,
+  SiShadcnui,
   SiTailwindcss,
   SiTypescript,
 } from "react-icons/si";
@@ -28,6 +31,11 @@ const icons = [
     label: "TypeScript",
   },
   {
+    icon: SiClerk,
+    id: "7",
+    label: "Clerk",
+  },
+  {
     icon: SiTailwindcss,
     id: "13",
     label: "Tailwind",
@@ -46,6 +54,16 @@ const icons = [
     icon: VscVscode,
     id: "6",
     label: "VS Code",
+  },
+  {
+    icon: SiGithubactions,
+    id: "8",
+    label: "GitHub Actions",
+  },
+  {
+    icon: SiShadcnui,
+    id: "9",
+    label: "ShadCN/UI",
   },
 ];
 
@@ -79,7 +97,6 @@ const Stack = () => {
               align: "start",
             }}
             className="w-full max-w-50 self-center md:hidden md:max-w-lg"
-            id="stack"
           >
             <CarouselContent className="-ml-2 md:-ml-4">
               {icons.map((icon) => (

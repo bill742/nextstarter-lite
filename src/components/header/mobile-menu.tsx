@@ -83,7 +83,7 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                 <button
                   type="button"
                   onClick={() => handleNavClick(navItem.href)}
-                  className="flex w-full items-center justify-between rounded-lg px-4 py-3 text-left text-base font-medium text-stone-900 transition-all hover:bg-orange-50 hover:text-orange-600 dark:text-stone-100 dark:hover:bg-orange-950/30 dark:hover:text-orange-400"
+                  className="flex w-full items-center justify-between rounded-lg px-4 py-3 text-left text-base font-medium text-stone-900 transition-all hover:bg-orange-50 hover:text-orange-700 dark:text-stone-100 dark:hover:bg-orange-950/30 dark:hover:text-orange-400"
                 >
                   <span>{navItem.label}</span>
                   <span className="text-stone-400 transition-transform group-hover:translate-x-1 dark:text-stone-600">
