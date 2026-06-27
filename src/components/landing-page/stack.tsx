@@ -49,16 +49,6 @@ const icons = [
     id: "6",
     label: "VS Code",
   },
-  {
-    icon: SiGithubactions,
-    id: "8",
-    label: "GitHub Actions",
-  },
-  {
-    icon: SiShadcnui,
-    id: "9",
-    label: "ShadCN/UI",
-  },
 ];
 
 /**
