@@ -1,12 +1,12 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useEffectEvent } from "react";
 
-import { scrollToSection } from "@/lib/utils";
+import { useScrollToSection } from "@/lib/use-scroll-to-section";
 
 import Cta from "./cta";
-import { navigationItems } from "./navigation";
+import { navigationItems } from "./navigation-items";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -20,23 +20,29 @@ interface MobileMenuProps {
  * @returns Mobile menu overlay with navigation links
  */
 const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
-  // Close menu on escape key
+  const scrollToSection = useScrollToSection();
+
+  // Effect Event: always sees the latest onClose without being an effect
+  // dependency, so the keydown subscription below doesn't re-run every time
+  // the parent re-renders (e.g. on every scroll).
+  const onCloseEvent = useEffectEvent(onClose);
+
+  // Close menu on escape key + lock body scroll while open
   useEffect(() => {
+    if (!isOpen) return;
+
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") onCloseEvent();
     };
 
-    if (isOpen) {
-      document.addEventListener("keydown", handleEscape);
-      // Prevent body scroll when menu is open
-      document.body.style.overflow = "hidden";
-    }
+    document.addEventListener("keydown", handleEscape);
+    document.body.style.overflow = "hidden";
 
     return () => {
       document.removeEventListener("keydown", handleEscape);
       document.body.style.overflow = "unset";
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   const handleNavClick = (href: string) => {
     scrollToSection(href.substring(1));

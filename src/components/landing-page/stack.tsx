@@ -1,9 +1,7 @@
 import {
   SiEslint,
-  SiGithubactions,
   SiNextdotjs,
   SiPrettier,
-  SiShadcnui,
   SiTailwindcss,
   SiTypescript,
 } from "react-icons/si";
