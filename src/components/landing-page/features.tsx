@@ -14,6 +14,11 @@ const Features = () => {
             Features
           </h2>
           <ul className="grid gap-4 text-stone-600 md:grid-cols-2 md:gap-6 dark:text-stone-300">
+            <FeatureItem content="WCAG 2.1 AA accessibility, verified with Axe-core" />
+            <FeatureItem content="VS Code settings and recommended extensions" />
+            <FeatureItem content="ShadCN/UI for theming and component library" />
+            <FeatureItem content="Built-in light and dark themes" />
+            <FeatureItem content="End-to-end testing with Playwright" />
             <FeatureItem content="ESLint config and rules" />
             <FeatureItem content="Prettier configuration setup for Tailwind" />
             <FeatureItem
@@ -21,13 +26,8 @@ const Features = () => {
               link="https://react-icons.github.io/react-icons/"
               linkText="React Icons"
             />
-            <FeatureItem content="ShadCN/UI for theming and component library" />
-            <FeatureItem content="Built-in light and dark themes" />
-            <FeatureItem content="Testing with Playwright" />
-            <FeatureItem content="Custom 404 page" />
-            <FeatureItem content="Robots and Sitemap files" />
-            <FeatureItem content="VS Code settings and recommended extensions" />
-            <FeatureItem content="GitHub Actions workflow" />
+            <FeatureItem content="Custom 404 page, robots.txt, and sitemap.xml" />
+            <FeatureItem content="GitHub Actions CI workflow" />
           </ul>
         </div>
       </section>

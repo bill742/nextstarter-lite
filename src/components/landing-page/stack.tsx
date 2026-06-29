@@ -79,7 +79,6 @@ const Stack = () => {
               align: "start",
             }}
             className="w-full max-w-50 self-center md:hidden md:max-w-lg"
-            id="stack"
           >
             <CarouselContent className="-ml-2 md:-ml-4">
               {icons.map((icon) => (

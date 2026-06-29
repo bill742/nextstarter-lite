@@ -97,7 +97,10 @@ const GettingStarted = () => {
               aria-label="View on GitHub"
             >
               <Link
-                href="https://github.com/bill742/nextstarter"
+                href={
+                  process.env.NEXT_PUBLIC_GITHUB_URL ||
+                  "https://github.com/bill742/nextstarter"
+                }
                 target="_blank"
                 rel="noopener noreferrer"
               >
