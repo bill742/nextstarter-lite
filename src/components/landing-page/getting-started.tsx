@@ -99,7 +99,7 @@ const GettingStarted = () => {
               <Link
                 href={
                   process.env.NEXT_PUBLIC_GITHUB_URL ||
-                  "https://github.com/bill742/nextstarter"
+                  "https://github.com/bill742/nextstarter-lite"
                 }
                 target="_blank"
                 rel="noopener noreferrer"
