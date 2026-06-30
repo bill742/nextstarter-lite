@@ -8,6 +8,10 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SITE_URL: https://www.nextstarter.app
+      NEXT_PUBLIC_SITE_NAME: NextStarter
+      NEXT_PUBLIC_SITE_META_DESCRIPTION: A modern Next.js boilerplate for building production-ready web applications.
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -27,12 +31,10 @@ jobs:
     - name: Install Playwright OS dependencies only
       run: npx playwright install-deps
       if: steps.playwright-cache.outputs.cache-hit == 'true'
+    - name: Build Next.js app
+      run: npm run build
     - name: Run Playwright tests
       run: npx playwright test
-      env:
-          NEXT_PUBLIC_SITE_URL: https://www.nextstarter.app
-          NEXT_PUBLIC_SITE_NAME: NextStarter
-          NEXT_PUBLIC_SITE_META_DESCRIPTION: A modern Next.js boilerplate for building production-ready web applications.
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
