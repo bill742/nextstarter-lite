@@ -23,6 +23,13 @@ test.describe("Homepage does not have accessiblity issues", () => {
     const darkModeClass = await page.locator("html").getAttribute("class");
     expect(darkModeClass).toContain("dark");
 
+    // The click leaves the toggle focused, which opens its tooltip (Firefox
+    // keeps focus after a programmatic click; Chromium does not). Drop focus
+    // and wait for the tooltip to close so the scan runs on a stable page
+    // rather than a transient, mid-animation tooltip.
+    await themeToggle.first().blur();
+    await expect(page.getByRole("tooltip")).toHaveCount(0);
+
     const darkModeAccessibilityScanResults = await new AxeBuilder({
       page,
     }).analyze();
