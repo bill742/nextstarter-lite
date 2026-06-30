@@ -8,6 +8,12 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    # Run inside Playwright's official image: browsers and all OS dependencies
+    # are prebaked, so there is no `playwright install --with-deps` apt step to
+    # hang on. Pin the tag to the @playwright/test version in package.json.
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.2-noble
+      options: --user 1001
     env:
       NEXT_PUBLIC_SITE_URL: https://www.nextstarter.app
       NEXT_PUBLIC_SITE_NAME: NextStarter
@@ -19,18 +25,6 @@ jobs:
         node-version: lts/*
     - name: Install dependencies
       run: npm ci
-    - name: Cache Playwright browsers
-      uses: actions/cache@v4
-      id: playwright-cache
-      with:
-        path: ~/.cache/ms-playwright
-        key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-      if: steps.playwright-cache.outputs.cache-hit != 'true'
-    - name: Install Playwright OS dependencies only
-      run: npx playwright install-deps
-      if: steps.playwright-cache.outputs.cache-hit == 'true'
     - name: Build Next.js app
       run: npm run build
     - name: Run Playwright tests
