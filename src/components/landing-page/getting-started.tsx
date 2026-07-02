@@ -28,7 +28,7 @@ const GettingStarted = () => {
               <div className="space-y-2">
                 <p className="font-medium text-stone-900 dark:text-stone-50">
                   Create a new NextStarter project using the following command
-                  in the teminal
+                  in the terminal
                 </p>
                 <code className="block rounded bg-stone-100 p-2 text-sm text-stone-700 dark:bg-stone-800 dark:text-stone-300">
                   npx @bill742/create-nextstarter my-project
