@@ -1,0 +1,13 @@
+# Allow the native build scripts these transitive dependencies need.
+# pnpm 10+ blocks dependency build scripts by default; without this,
+# `pnpm install` reports ERR_PNPM_IGNORED_BUILDS for sharp/unrs-resolver.
+#
+# `allowBuilds` is the pnpm 11+ setting; `onlyBuiltDependencies` is the
+# pnpm 10.x equivalent. Both are listed so the template installs cleanly
+# regardless of which pnpm version the user has. The unused key is ignored.
+allowBuilds:
+  sharp: true
+  unrs-resolver: true
+onlyBuiltDependencies:
+  - sharp
+  - unrs-resolver

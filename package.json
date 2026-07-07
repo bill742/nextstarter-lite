@@ -2,6 +2,7 @@
   "name": "nextstarter-lite",
   "version": "1.0.0",
   "private": true,
+  "trustedDependencies": ["sharp", "unrs-resolver"],
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
