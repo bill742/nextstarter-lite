@@ -33,9 +33,7 @@ test.describe("Home page sections", () => {
     ).toBeVisible();
 
     await nav.getByRole("button", { name: "Features" }).click();
-    await expect(
-      page.getByRole("heading", { name: "Features" })
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Features" })).toBeVisible();
   });
 });
 
@@ -47,7 +45,10 @@ test.describe("Home page navigation scroll behavior", () => {
   test("About nav link scrolls the About section into view", async ({
     page,
   }) => {
-    await page.getByRole("navigation").getByRole("button", { name: "About" }).click();
+    await page
+      .getByRole("navigation")
+      .getByRole("button", { name: "About" })
+      .click();
 
     await expect(page.locator("section#about")).toBeInViewport();
     await expect(
@@ -58,7 +59,10 @@ test.describe("Home page navigation scroll behavior", () => {
   test("Tech Stack nav link scrolls the Tech Stack section into view", async ({
     page,
   }) => {
-    await page.getByRole("navigation").getByRole("button", { name: "Tech Stack" }).click();
+    await page
+      .getByRole("navigation")
+      .getByRole("button", { name: "Tech Stack" })
+      .click();
 
     await expect(page.locator("section#stack")).toBeInViewport();
     await expect(
@@ -69,7 +73,10 @@ test.describe("Home page navigation scroll behavior", () => {
   test("Features nav link scrolls the Features section into view", async ({
     page,
   }) => {
-    await page.getByRole("navigation").getByRole("button", { name: "Features" }).click();
+    await page
+      .getByRole("navigation")
+      .getByRole("button", { name: "Features" })
+      .click();
 
     await expect(page.locator("section#features")).toBeInViewport();
     await expect(
@@ -104,5 +111,39 @@ test.describe("Home page section item counts", () => {
 
   test("Getting Started section displays 4 steps", async ({ page }) => {
     await expect(page.locator("section#getting-started ol li")).toHaveCount(4);
+  });
+});
+
+test.describe("Home page upgrade (Pro) section", () => {
+  test("Pro nav link scrolls the upgrade section into view", async ({
+    page,
+  }) => {
+    await page.goto("./");
+    await page
+      .getByRole("navigation")
+      .getByRole("button", { name: "Pro" })
+      .click();
+
+    await expect(page.locator("section#pro")).toBeInViewport();
+    await expect(
+      page.getByRole("heading", { name: "Upgrade to NextStarter Pro" })
+    ).toBeInViewport();
+  });
+
+  test("shows Free and Pro plans with an external Get Pro CTA", async ({
+    page,
+  }) => {
+    await page.goto("./");
+    const pro = page.locator("section#pro");
+
+    await expect(pro.getByRole("heading", { name: "Free" })).toBeVisible();
+    await expect(
+      pro.getByRole("heading", { exact: true, name: "Pro" })
+    ).toBeVisible();
+
+    const cta = pro.getByRole("link", { name: "Get NextStarter Pro" });
+    await expect(cta).toBeVisible();
+    await expect(cta).toHaveAttribute("target", "_blank");
+    expect(await cta.getAttribute("href")).toMatch(/^https?:\/\//);
   });
 });
