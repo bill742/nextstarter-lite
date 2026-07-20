@@ -6,6 +6,7 @@ const quickLinkItems = [
   { href: "#about", id: 1, label: "About" },
   { href: "#stack", id: 2, label: "Tech Stack" },
   { href: "#features", id: 3, label: "Features" },
+  { href: "#pro", id: 5, label: "Upgrade to Pro" },
   { href: "#getting-started", id: 4, label: "Getting Started" },
 ];
 

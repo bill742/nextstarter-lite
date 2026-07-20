@@ -2,6 +2,7 @@ import About from "./about";
 import Features from "./features";
 import GettingStarted from "./getting-started";
 import Stack from "./stack";
+import Upgrade from "./upgrade";
 
 /**
  * Default home page component displaying project features and installation instructions
@@ -19,6 +20,8 @@ const LandingPage = () => {
       <Stack />
 
       <Features />
+
+      <Upgrade />
 
       <GettingStarted />
     </>

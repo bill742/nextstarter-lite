@@ -7,6 +7,11 @@ A modern Next.js boilerplate to ship production-ready projects fast — with Typ
 
 **[Live Demo](https://www.nextstarter.app/)**
 
+> **This is the free version of NextStarter.** [NextStarter Pro](https://www.nextstarter.app/)
+> adds authentication, a database, Stripe billing, email, a dashboard, admin,
+> internationalization, and more — a complete SaaS foundation.
+> [See what's included ↓](#upgrade-to-pro)
+
 ## Tech Stack
 
 | Layer      | Technology                                                                                      |
@@ -69,6 +74,31 @@ A modern Next.js boilerplate to ship production-ready projects fast — with Typ
 - `next/image` for optimized images
 - Static generation for sitemap and robots metadata
 - Custom 404 page
+
+---
+
+## Upgrade to Pro
+
+This free starter gives you a polished, accessible marketing landing page with
+testing and tooling built in. **NextStarter Pro** turns it into a complete SaaS
+foundation.
+
+**Everything in the free version, plus:**
+
+- 🔐 Authentication (Clerk) — sign-in, protected routes, user profile
+- 🗄️ Database (Prisma + PostgreSQL) — a user-owned CRUD example
+- ✉️ Transactional email (Resend) and 💳 Stripe subscriptions
+- 📊 Dashboard app shell + a protected admin panel
+- 📝 MDX blog and a validated contact form
+- 🌍 Internationalization — English, Spanish, and Arabic (RTL)
+- 🛡️ Security headers, CSP, and API rate limiting
+- 🚀 Waitlist mode, PostHog analytics, and Sentry error tracking
+- 📚 Comprehensive documentation
+
+**$199 one-time** — lifetime access and updates via a private GitHub repo (just
+`git pull` to update).
+
+**[Get NextStarter Pro →](https://www.nextstarter.app/)**
 
 ---
 
