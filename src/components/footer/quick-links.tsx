@@ -1,6 +1,6 @@
 "use client";
 
-import { scrollToSection } from "@/lib/utils";
+import { useScrollToSection } from "@/lib/use-scroll-to-section";
 
 const quickLinkItems = [
   { href: "#about", id: 1, label: "About" },
@@ -16,6 +16,8 @@ const quickLinkItems = [
  * @returns List of quick navigation links with hover effects
  */
 const QuickLinks = () => {
+  const scrollToSection = useScrollToSection();
+
   return (
     <ul className="space-y-2 text-sm">
       {quickLinkItems.map((link) => (

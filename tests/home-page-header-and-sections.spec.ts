@@ -146,4 +146,34 @@ test.describe("Home page upgrade (Pro) section", () => {
     await expect(cta).toHaveAttribute("target", "_blank");
     expect(await cta.getAttribute("href")).toMatch(/^https?:\/\//);
   });
+
+  test("Get Pro CTA points at the configured purchase URL, off this site", async ({
+    page,
+  }) => {
+    const proUrl = process.env.NEXT_PUBLIC_PRO_URL;
+
+    // Skips where the purchase URL isn't configured — a fresh clone of this
+    // starter has no checkout link of its own yet.
+    test.skip(
+      !proUrl,
+      "NEXT_PUBLIC_PRO_URL is not set in this environment; nothing to verify"
+    );
+
+    await page.goto("./");
+    const href = await page
+      .locator("section#pro")
+      .getByRole("link", { name: "Get NextStarter Pro" })
+      .getAttribute("href");
+
+    // Catches a build that didn't pick the variable up.
+    expect(href).toBe(proUrl);
+
+    // Catches the failure that silently kills sales: the component falls back
+    // to the marketing site when the variable is missing, so the buy button
+    // links to the very page it sits on and every test above still passes.
+    const siteOrigin = new URL(
+      process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+    ).origin;
+    expect(new URL(href as string).origin).not.toBe(siteOrigin);
+  });
 });

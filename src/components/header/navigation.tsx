@@ -1,4 +1,6 @@
-import { scrollToSection } from "@/lib/utils";
+"use client";
+
+import { useScrollToSection } from "@/lib/use-scroll-to-section";
 
 import { navigationItems } from "./navigation-items";
 
@@ -8,6 +10,8 @@ import { navigationItems } from "./navigation-items";
  * @returns Navigation menu with smooth scroll buttons (hidden on mobile)
  */
 const Navigation = () => {
+  const scrollToSection = useScrollToSection();
+
   return (
     <nav className="hidden items-center gap-6 md:flex">
       <ul className="hidden space-x-6 md:flex md:items-center">

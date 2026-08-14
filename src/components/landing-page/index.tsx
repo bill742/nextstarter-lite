@@ -1,6 +1,7 @@
 import About from "./about";
 import Features from "./features";
 import GettingStarted from "./getting-started";
+import ScrollTargetRestorer from "./scroll-target-restorer";
 import Stack from "./stack";
 import Upgrade from "./upgrade";
 
@@ -11,6 +12,7 @@ import Upgrade from "./upgrade";
 const LandingPage = () => {
   return (
     <>
+      <ScrollTargetRestorer />
       <h2 className="sr-only">
         NextStarter - A modern Next.js boilerplate for building production-ready
         web applications.
