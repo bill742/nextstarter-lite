@@ -18,6 +18,12 @@ jobs:
       NEXT_PUBLIC_SITE_URL: https://www.nextstarter.app
       NEXT_PUBLIC_SITE_NAME: NextStarter
       NEXT_PUBLIC_SITE_META_DESCRIPTION: A modern Next.js boilerplate for building production-ready web applications.
+      # Polar checkout link for the "Get NextStarter Pro" CTA. Kept as a repo
+      # variable (Settings → Secrets and variables → Actions → Variables) rather
+      # than hardcoded, so the link can change without a commit and forks of this
+      # starter aren't pinned to someone else's storefront. When it is unset the
+      # CTA assertion skips; when set, CI proves the button really points at it.
+      NEXT_PUBLIC_PRO_URL: ${{ vars.NEXT_PUBLIC_PRO_URL }}
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4

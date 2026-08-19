@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "npx playwright test",
+    "test:checkout": "node scripts/checkout-smoke.mjs",
     "doctor": "npx react-doctor@latest"
   },
   "dependencies": {

@@ -33,9 +33,7 @@ test.describe("Home page sections", () => {
     ).toBeVisible();
 
     await nav.getByRole("button", { name: "Features" }).click();
-    await expect(
-      page.getByRole("heading", { name: "Features" })
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Features" })).toBeVisible();
   });
 });
 
@@ -47,7 +45,10 @@ test.describe("Home page navigation scroll behavior", () => {
   test("About nav link scrolls the About section into view", async ({
     page,
   }) => {
-    await page.getByRole("navigation").getByRole("button", { name: "About" }).click();
+    await page
+      .getByRole("navigation")
+      .getByRole("button", { name: "About" })
+      .click();
 
     await expect(page.locator("section#about")).toBeInViewport();
     await expect(
@@ -58,7 +59,10 @@ test.describe("Home page navigation scroll behavior", () => {
   test("Tech Stack nav link scrolls the Tech Stack section into view", async ({
     page,
   }) => {
-    await page.getByRole("navigation").getByRole("button", { name: "Tech Stack" }).click();
+    await page
+      .getByRole("navigation")
+      .getByRole("button", { name: "Tech Stack" })
+      .click();
 
     await expect(page.locator("section#stack")).toBeInViewport();
     await expect(
@@ -69,7 +73,10 @@ test.describe("Home page navigation scroll behavior", () => {
   test("Features nav link scrolls the Features section into view", async ({
     page,
   }) => {
-    await page.getByRole("navigation").getByRole("button", { name: "Features" }).click();
+    await page
+      .getByRole("navigation")
+      .getByRole("button", { name: "Features" })
+      .click();
 
     await expect(page.locator("section#features")).toBeInViewport();
     await expect(
@@ -104,5 +111,69 @@ test.describe("Home page section item counts", () => {
 
   test("Getting Started section displays 4 steps", async ({ page }) => {
     await expect(page.locator("section#getting-started ol li")).toHaveCount(4);
+  });
+});
+
+test.describe("Home page upgrade (Pro) section", () => {
+  test("Pro nav link scrolls the upgrade section into view", async ({
+    page,
+  }) => {
+    await page.goto("./");
+    await page
+      .getByRole("navigation")
+      .getByRole("button", { name: "Pro" })
+      .click();
+
+    await expect(page.locator("section#pro")).toBeInViewport();
+    await expect(
+      page.getByRole("heading", { name: "Upgrade to NextStarter Pro" })
+    ).toBeInViewport();
+  });
+
+  test("shows Free and Pro plans with an external Get Pro CTA", async ({
+    page,
+  }) => {
+    await page.goto("./");
+    const pro = page.locator("section#pro");
+
+    await expect(pro.getByRole("heading", { name: "Free" })).toBeVisible();
+    await expect(
+      pro.getByRole("heading", { exact: true, name: "Pro" })
+    ).toBeVisible();
+
+    const cta = pro.getByRole("link", { name: "Get NextStarter Pro" });
+    await expect(cta).toBeVisible();
+    await expect(cta).toHaveAttribute("target", "_blank");
+    expect(await cta.getAttribute("href")).toMatch(/^https?:\/\//);
+  });
+
+  test("Get Pro CTA points at the configured purchase URL, off this site", async ({
+    page,
+  }) => {
+    const proUrl = process.env.NEXT_PUBLIC_PRO_URL;
+
+    // Skips where the purchase URL isn't configured — a fresh clone of this
+    // starter has no checkout link of its own yet.
+    test.skip(
+      !proUrl,
+      "NEXT_PUBLIC_PRO_URL is not set in this environment; nothing to verify"
+    );
+
+    await page.goto("./");
+    const href = await page
+      .locator("section#pro")
+      .getByRole("link", { name: "Get NextStarter Pro" })
+      .getAttribute("href");
+
+    // Catches a build that didn't pick the variable up.
+    expect(href).toBe(proUrl);
+
+    // Catches the failure that silently kills sales: the component falls back
+    // to the marketing site when the variable is missing, so the buy button
+    // links to the very page it sits on and every test above still passes.
+    const siteOrigin = new URL(
+      process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+    ).origin;
+    expect(new URL(href as string).origin).not.toBe(siteOrigin);
   });
 });

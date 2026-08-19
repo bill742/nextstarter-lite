@@ -103,7 +103,7 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
 
         {/* Mobile CTA */}
         <div className="shrink-0 border-t border-stone-200/50 p-6 dark:border-stone-800/50">
-          <Cta />
+          <Cta onNavigate={onClose} />
         </div>
       </div>
     </>

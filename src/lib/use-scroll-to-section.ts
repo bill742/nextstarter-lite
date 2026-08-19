@@ -33,3 +33,21 @@ export const useScrollToSection = () => {
     [pathname, router]
   );
 };
+
+/**
+ * Reads and clears the section stashed by {@link useScrollToSection}.
+ *
+ * Clearing on read means the scroll happens once, on the navigation that
+ * requested it, and not again on a later reload of the home page.
+ *
+ * @returns The pending section id, or `null` when there isn't one.
+ */
+export const consumePendingScrollTarget = () => {
+  const sectionId = sessionStorage.getItem(SCROLL_TARGET_KEY);
+
+  if (sectionId) {
+    sessionStorage.removeItem(SCROLL_TARGET_KEY);
+  }
+
+  return sectionId;
+};

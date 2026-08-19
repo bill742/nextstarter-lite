@@ -1,7 +1,9 @@
 import About from "./about";
 import Features from "./features";
 import GettingStarted from "./getting-started";
+import ScrollTargetRestorer from "./scroll-target-restorer";
 import Stack from "./stack";
+import Upgrade from "./upgrade";
 
 /**
  * Default home page component displaying project features and installation instructions
@@ -10,6 +12,7 @@ import Stack from "./stack";
 const LandingPage = () => {
   return (
     <>
+      <ScrollTargetRestorer />
       <h2 className="sr-only">
         NextStarter - A modern Next.js boilerplate for building production-ready
         web applications.
@@ -19,6 +22,8 @@ const LandingPage = () => {
       <Stack />
 
       <Features />
+
+      <Upgrade />
 
       <GettingStarted />
     </>
