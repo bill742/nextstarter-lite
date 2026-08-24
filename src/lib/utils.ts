@@ -29,3 +29,17 @@ export const scrollToSection = (sectionId: string) => {
     });
   }
 };
+
+/**
+ * The site's base URL with any trailing slash removed.
+ *
+ * Callers append their own leading-slash paths (`${siteUrl}/pro`), so a
+ * trailing slash on the environment variable would produce `//pro`. Normalizing
+ * here means either form of `NEXT_PUBLIC_SITE_URL` works — which matters
+ * because this is a starter, and the value is whatever the person cloning it
+ * happened to paste.
+ */
+export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(
+  /\/+$/,
+  ""
+);

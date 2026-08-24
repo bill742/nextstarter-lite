@@ -1,31 +1,24 @@
-"use client";
-
-import { useScrollToSection } from "@/lib/use-scroll-to-section";
+import NavLink from "@/components/nav-link";
 
 import { navigationItems } from "./navigation-items";
 
 /**
  * Main navigation component for header
- * Renders navigation links that smoothly scroll to page sections
- * @returns Navigation menu with smooth scroll buttons (hidden on mobile)
+ * Renders navigation items that either scroll to a section or link to a route
+ * @returns Navigation menu (hidden on mobile)
  */
 const Navigation = () => {
-  const scrollToSection = useScrollToSection();
-
   return (
     <nav className="hidden items-center gap-6 md:flex">
       <ul className="hidden space-x-6 md:flex md:items-center">
         {navigationItems.map((navItem) => (
           <li key={navItem.id}>
-            <button
-              type="button"
-              onClick={() => scrollToSection(navItem.href.substring(1))}
+            <NavLink
+              href={navItem.href}
               className="text-sm font-medium text-stone-600 transition-colors hover:text-orange-800 dark:text-stone-400 dark:hover:text-orange-400"
-              aria-label={navItem.label}
             >
               {navItem.label}
-              <div className="bg-primary absolute bottom-0 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full"></div>
-            </button>
+            </NavLink>
           </li>
         ))}
       </ul>

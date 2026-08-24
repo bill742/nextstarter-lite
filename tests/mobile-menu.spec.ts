@@ -19,7 +19,9 @@ test.describe("Mobile menu navigation", () => {
     test("A nav link from another route closes the menu, routes home, and scrolls", async ({
       page,
     }) => {
-      await page.goto("/thanks");
+      // A route that always exists, so this keeps working in a project
+      // scaffolded from this starter where the marketing routes are removed.
+      await page.goto("/this-route-does-not-exist");
       await openMenu(page);
 
       // Scoped to the menu's nav — the footer quick links repeat these labels.

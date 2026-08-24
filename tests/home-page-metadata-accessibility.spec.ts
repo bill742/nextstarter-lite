@@ -46,8 +46,13 @@ test.describe("Page Metadata and Document Structure", () => {
     const lang = await page.locator("html").getAttribute("lang");
     expect(lang).toBe("en");
 
+    // The root layout sets a keyword-bearing default title with a
+    // "%s | SITE_NAME" template; the bare site name alone means the default
+    // was lost.
     const title = await page.title();
-    expect(title).toBe("NextStarter");
+    expect(title).toBe(
+      `Free Next.js Boilerplate with TypeScript & Tailwind | ${process.env.NEXT_PUBLIC_SITE_NAME}`
+    );
 
     const descriptionMeta = await page
       .locator('meta[name="description"]')

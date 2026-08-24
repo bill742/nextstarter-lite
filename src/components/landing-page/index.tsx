@@ -23,9 +23,9 @@ const LandingPage = () => {
 
       <Features />
 
-      <Upgrade />
-
       <GettingStarted />
+
+      <Upgrade />
     </>
   );
 };

@@ -9,6 +9,7 @@ import Footer from "@/components/footer";
 import Header from "@/components/header";
 import SkipNav from "@/components/skip-nav";
 import { ThemeProvider } from "@/components/theme-provider";
+import { organizationSchema, softwareSchema } from "@/lib/schema";
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -23,20 +24,51 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  authors: [{ name: "Bill Dean", url: "https://billdean.me" }],
+  category: "technology",
+  creator: "Bill Dean",
+  keywords: [
+    "next.js boilerplate",
+    "next.js starter kit",
+    "typescript tailwind boilerplate",
+    "shadcn ui starter",
+    "accessible next.js template",
+    "wcag next.js boilerplate",
+  ],
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
   ),
   openGraph: {
-    description: process.env.NEXT_PUBLIC_SITE_META_DESCRIPTION,
+    description:
+      "Free, WCAG 2.1 AA verified Next.js boilerplate. TypeScript, Tailwind, shadcn/ui, Playwright, and CI configured out of the box.",
     images: "",
-    title: "NextStarter",
+    locale: "en_US",
+    siteName: process.env.NEXT_PUBLIC_SITE_NAME,
+    title: `${process.env.NEXT_PUBLIC_SITE_NAME} — Ship accessible Next.js apps in minutes`,
+    type: "website",
+    url: process.env.NEXT_PUBLIC_SITE_URL,
+  },
+  publisher: process.env.NEXT_PUBLIC_SITE_NAME,
+  robots: {
+    follow: true,
+    googleBot: {
+      follow: true,
+      index: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+    index: true,
   },
   title: {
-    default: "NextStarter",
-    template: "%s | NextStarter",
+    default: `Free Next.js Boilerplate with TypeScript & Tailwind | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
+    template: `%s | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
   },
   twitter: {
     card: "summary_large_image",
+    description:
+      "Free, WCAG 2.1 AA verified Next.js boilerplate. TypeScript, Tailwind, shadcn/ui, Playwright, and CI out of the box.",
+    title: `${process.env.NEXT_PUBLIC_SITE_NAME} — Ship accessible Next.js apps in minutes`,
   },
 };
 
@@ -68,6 +100,19 @@ const RootLayout = ({
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />
+        {/* JSON-LD — see lib/schema.ts */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(softwareSchema),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
       </body>
     </html>
   );

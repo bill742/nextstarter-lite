@@ -3,7 +3,7 @@
 import { X } from "lucide-react";
 import { useEffect, useEffectEvent } from "react";
 
-import { useScrollToSection } from "@/lib/use-scroll-to-section";
+import NavLink from "@/components/nav-link";
 
 import Cta from "./cta";
 import { navigationItems } from "./navigation-items";
@@ -20,8 +20,6 @@ interface MobileMenuProps {
  * @returns Mobile menu overlay with navigation links
  */
 const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
-  const scrollToSection = useScrollToSection();
-
   // Effect Event: always sees the latest onClose without being an effect
   // dependency, so the keydown subscription below doesn't re-run every time
   // the parent re-renders (e.g. on every scroll).
@@ -43,11 +41,6 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
-
-  const handleNavClick = (href: string) => {
-    scrollToSection(href.substring(1));
-    onClose();
-  };
 
   return (
     <>
@@ -86,16 +79,16 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
           <ul className="space-y-2">
             {navigationItems.map((navItem) => (
               <li key={navItem.id}>
-                <button
-                  type="button"
-                  onClick={() => handleNavClick(navItem.href)}
+                <NavLink
+                  href={navItem.href}
+                  onNavigate={onClose}
                   className="flex w-full items-center justify-between rounded-lg px-4 py-3 text-left text-base font-medium text-stone-900 transition-all hover:bg-orange-50 hover:text-orange-700 dark:text-stone-100 dark:hover:bg-orange-950/30 dark:hover:text-orange-400"
                 >
                   <span>{navItem.label}</span>
                   <span className="text-stone-400 transition-transform group-hover:translate-x-1 dark:text-stone-600">
                     →
                   </span>
-                </button>
+                </NavLink>
               </li>
             ))}
           </ul>

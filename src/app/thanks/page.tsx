@@ -1,20 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-
-/**
- * Polar customer portal for this organization. Buyers sign in with the email
- * they used at checkout (Polar sends a one-time code) to claim their benefits,
- * re-download invoices, and manage the order.
- */
-const portalUrl =
-  process.env.NEXT_PUBLIC_POLAR_PORTAL_URL ||
-  "https://polar.sh/742-studios/portal";
-
-/** Where buyers should write if an order or repo invite goes wrong. */
-const supportEmail =
-  process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "bill@billdean.me";
+import { isUpsellEnabled, portalUrl, supportEmail } from "@/lib/upsell";
 
 /** The post-purchase steps, rendered as a numbered checklist. */
 const steps = [
@@ -68,6 +57,9 @@ export const metadata: Metadata = {
  * @returns The order confirmation page with next steps.
  */
 const Thanks = () => {
+  // A post-purchase page only makes sense where a purchase is possible.
+  if (!isUpsellEnabled) notFound();
+
   return (
     <div className="min-h-screen pt-16">
       <main className="mx-auto max-w-5xl px-6 py-24 md:py-32" id="main">
@@ -121,16 +113,18 @@ const Thanks = () => {
               Open your customer portal
             </Link>
           </Button>
-          <p className="text-center text-sm text-stone-600 dark:text-stone-400">
-            Something not right with your order?{" "}
-            <a
-              href={`mailto:${supportEmail}`}
-              className="underline transition-colors hover:text-orange-700 dark:hover:text-orange-400"
-            >
-              Email {supportEmail}
-            </a>{" "}
-            and include the email address you used at checkout.
-          </p>
+          {supportEmail ? (
+            <p className="text-center text-sm text-stone-600 dark:text-stone-400">
+              Something not right with your order?{" "}
+              <a
+                href={`mailto:${supportEmail}`}
+                className="underline transition-colors hover:text-orange-700 dark:hover:text-orange-400"
+              >
+                Email {supportEmail}
+              </a>{" "}
+              and include the email address you used at checkout.
+            </p>
+          ) : null}
           <Link
             href="/"
             className="text-sm text-stone-600 underline transition-colors hover:text-orange-700 dark:text-stone-400 dark:hover:text-orange-400"
