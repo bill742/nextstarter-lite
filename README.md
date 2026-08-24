@@ -128,3 +128,10 @@ npm run dev
 | `npm run start` | Serve the production build              |
 | `npm run lint`  | Run ESLint                              |
 | `npm run test`  | Run Playwright end-to-end tests         |
+
+---
+
+## License
+
+Released under the [MIT License](LICENSE) — free to use for personal and
+commercial projects.
