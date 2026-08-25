@@ -30,17 +30,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install ESLint
-        run: |
-          npm install eslint@9.28.0
-          npm install @microsoft/eslint-formatter-sarif@3.1.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
 
+      # `npm ci` installs the ESLint version package-lock.json pins along with
+      # every plugin eslint.config.mjs loads, so CI lints with the same
+      # toolchain as `npm run lint` locally. Previously this step installed a
+      # standalone `eslint@9.28.0` and no plugins, which both drifted from the
+      # project and left the config unable to resolve what it imports.
+      #
+      # The SARIF formatter is only needed for this upload, so it is installed
+      # with --no-save rather than being added to the project's dependencies.
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm install --no-save @microsoft/eslint-formatter-sarif@3.1.0
+
+      # `--ext` is intentionally absent: flat config selects files itself, and
+      # the flag is a no-op under eslint.config.mjs.
       - name: Run ESLint
         env:
           SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
         run: npx eslint .
           --config eslint.config.mjs
-          --ext .js,.jsx,.ts,.tsx
           --format @microsoft/eslint-formatter-sarif
           --output-file eslint-results.sarif
         continue-on-error: true
