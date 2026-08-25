@@ -5,6 +5,9 @@
 # `allowBuilds` is the pnpm 11+ setting; `onlyBuiltDependencies` is the
 # pnpm 10.x equivalent. Both are listed so the template installs cleanly
 # regardless of which pnpm version the user has. The unused key is ignored.
+#
+# This file only matters to people who install this starter with pnpm.
+# create-nextstarter removes it when a new project chooses npm, bun, or yarn.
 allowBuilds:
   sharp: true
   unrs-resolver: true
@@ -12,20 +15,21 @@ onlyBuiltDependencies:
   - sharp
   - unrs-resolver
 
-# Supply-chain hardening.
+# Supply-chain hardening for pnpm installs.
 #
 # `minimumReleaseAge` refuses to install any version published less than 7 days
 # ago. Compromised releases are typically caught and unpublished within hours,
 # so the delay means a hijacked package expires before it can reach an install.
+# It degrades gently: pnpm resolves to the newest version older than the
+# threshold instead of failing outright.
+#
+# `trustPolicy: no-downgrade` is deliberately NOT set here. It hard-fails an
+# install (ERR_PNPM_TRUST_DOWNGRADE) whenever a package's trust signals weaken
+# between versions, which happens for ordinary publishing-infrastructure
+# changes as often as for real attacks. That is too sharp an edge for a
+# template, where it would break a brand-new project on its first command.
+#
+# This repository's own supply-chain checks live in .github/dependabot.yml
+# (release cooldown) and .github/workflows/supply-chain.yml (signature
+# verification), which run on npm, the package manager this repo installs with.
 minimumReleaseAge: 10080
-# `no-downgrade` rejects an update whose trust signals (provenance attestation,
-# signatures) are weaker than the version already in the lockfile — the shape a
-# hijacked release usually takes.
-trustPolicy: no-downgrade
-# How long trust downgrades are actually enforced for. pnpm exempts anything
-# published longer ago than this, so it must stay well above minimumReleaseAge —
-# set to the same 7 days the two would cancel out and trustPolicy would never
-# fire. 90 days keeps a real enforcement window over the period a hijacked
-# release would plausibly still be live, without failing installs over the
-# ordinary publishing-infrastructure changes visible in years-old packages.
-trustPolicyIgnoreAfter: 129600
