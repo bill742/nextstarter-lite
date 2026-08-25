@@ -15,6 +15,7 @@ const Features = () => {
           </h2>
           <ul className="grid gap-4 text-stone-600 md:grid-cols-2 md:gap-6 dark:text-stone-300">
             <FeatureItem content="WCAG 2.1 AA accessibility, verified with Axe-core" />
+            <FeatureItem content="Lighthouse 100/100/100/100 on desktop, enforced in CI" />
             <FeatureItem content="VS Code settings and recommended extensions" />
             <FeatureItem content="ShadCN/UI for theming and component library" />
             <FeatureItem content="Built-in light and dark themes" />

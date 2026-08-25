@@ -11,9 +11,9 @@ const About = () => {
         id="about"
       >
         <div className="space-y-6">
-          <h2 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">
+          <h1 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">
             About {process.env.NEXT_PUBLIC_SITE_NAME}
-          </h2>
+          </h1>
           <p className="mx-auto max-w-2xl text-lg leading-relaxed text-stone-600 md:text-xl dark:text-stone-300">
             This is a boilerplate I put together for creating my front-end
             projects with <strong>NextJS</strong>, TypeScript, and Tailwind. It

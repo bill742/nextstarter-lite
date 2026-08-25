@@ -9,8 +9,12 @@ test.describe("Home page header and navigation", () => {
     const header = page.locator("header");
     await expect(header).toBeVisible();
 
-    const h1 = await page.locator("h1").textContent();
-    expect(h1?.trim()).toBe(process.env.NEXT_PUBLIC_SITE_NAME);
+    // Exactly one h1, and it is page content rather than the logo — the logo
+    // repeats on every route, so using it as the h1 gave every page the same
+    // one and wasted the strongest on-page heading signal.
+    const h1 = page.locator("h1");
+    await expect(h1).toHaveCount(1);
+    await expect(h1).toHaveText(`About ${process.env.NEXT_PUBLIC_SITE_NAME}`);
 
     const nav = page.getByRole("navigation");
     await expect(nav).toBeVisible();
@@ -105,8 +109,8 @@ test.describe("Home page section item counts", () => {
     await expect(page.locator("section#stack ul li")).toHaveCount(6);
   });
 
-  test("Features section displays 10 features", async ({ page }) => {
-    await expect(page.locator("section#features ul li")).toHaveCount(10);
+  test("Features section displays 11 features", async ({ page }) => {
+    await expect(page.locator("section#features ul li")).toHaveCount(11);
   });
 
   test("Getting Started section displays 4 steps", async ({ page }) => {

@@ -30,15 +30,15 @@ const Hero = () => {
             Next.js 16 · SaaS Boilerplate
           </p>
 
-          <h2 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">
-            NextStarter Pro — the full SaaS stack, one-time $199
-          </h2>
+          <h1 className="font-serif text-2xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">
+            NextStarter Pro - The full SaaS stack, one-time $199
+          </h1>
 
           <p className="mx-auto max-w-2xl text-lg leading-relaxed text-stone-600 md:text-xl dark:text-stone-300">
-            You&apos;re looking at the free version. Pro is a production-ready
-            Next.js 16 starter with authentication, Stripe payments, a database,
-            email, and a dashboard already wired up — and accessibility verified
-            with automated tests. Go from clone to launch in days, not weeks.
+            NextStarter Pro is a production-ready Next.js 16 starter with
+            authentication, Stripe payments, a database, email, and a dashboard
+            already wired up plus accessibility verified with automated tests.
+            Go from clone to launch in days, not weeks.
           </p>
 
           <ul className="mx-auto max-w-2xl space-y-3 text-left text-stone-600 dark:text-stone-300">

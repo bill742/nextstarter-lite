@@ -6,6 +6,8 @@
   "trustedDependencies": ["sharp", "unrs-resolver"],
   "scripts": {
     "dev": "next dev --turbopack",
+    "lighthouse": "npx --yes @lhci/cli@0.15.x autorun --config=./lighthouserc.js",
+    "lighthouse:desktop": "npx --yes @lhci/cli@0.15.x autorun --config=./lighthouserc.desktop.js",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

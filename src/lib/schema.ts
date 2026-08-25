@@ -62,6 +62,7 @@ export const softwareSchema = {
   downloadUrl: NPM_URL,
   featureList: [
     "WCAG 2.1 AA accessibility verification",
+    "Lighthouse 100 performance, accessibility, best practices, and SEO on desktop",
     "TypeScript and Tailwind CSS configuration",
     "shadcn/ui component library with theming",
     "Light and dark theme support",

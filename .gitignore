@@ -62,3 +62,6 @@ tailwind.config.ts.backup
 # hide agent skill files and documentation for the time being
 .agents/*
 src/lib/README.md
+
+# Lighthouse CI reports
+.lighthouseci

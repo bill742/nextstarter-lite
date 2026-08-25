@@ -4,6 +4,7 @@ A modern Next.js boilerplate to ship production-ready projects fast — with Typ
 
 [![ESLint](https://github.com/bill742/nextstarter-lite/actions/workflows/eslint.yml/badge.svg)](https://github.com/bill742/nextstarter-lite/actions/workflows/eslint.yml)
 [![Playwright Tests](https://github.com/bill742/nextstarter-lite/actions/workflows/playwright.yml/badge.svg)](https://github.com/bill742/nextstarter-lite/actions/workflows/playwright.yml)
+[![Lighthouse](https://github.com/bill742/nextstarter-lite/actions/workflows/lighthouse.yml/badge.svg)](https://github.com/bill742/nextstarter-lite/actions/workflows/lighthouse.yml)
 
 **[Live Demo](https://www.nextstarter.app/)**
 
@@ -70,6 +71,13 @@ A modern Next.js boilerplate to ship production-ready projects fast — with Typ
 
 ### Performance
 
+- **Lighthouse 100/100/100/100** on desktop in production — performance,
+  accessibility, best practices, and SEO
+- **Lighthouse CI** runs on every push and pull request, on both mobile and
+  desktop, and fails the build if the scores regress
+- Accessibility and SEO are asserted at a flat 100 on both form factors;
+  performance gets a floor rather than an exact target, because it is a timing
+  measurement on a shared CI runner
 - Server components by default — minimal client-side JavaScript
 - `next/image` for optimized images
 - Static generation for sitemap and robots metadata
@@ -128,6 +136,14 @@ npm run dev
 | `npm run start` | Serve the production build              |
 | `npm run lint`  | Run ESLint                              |
 | `npm run test`  | Run Playwright end-to-end tests         |
+
+Lighthouse runs in CI on every push. To run it locally against a production
+build (it starts and stops the server itself):
+
+```bash
+npm run lighthouse           # mobile preset
+npm run lighthouse:desktop   # desktop preset
+```
 
 ---
 

@@ -70,9 +70,9 @@ const Thanks = () => {
           >
             ✓
           </span>
-          <h2 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">
+          <h1 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">
             Thank you for your purchase
-          </h2>
+          </h1>
           <p className="mx-auto max-w-2xl text-lg leading-relaxed text-stone-600 dark:text-stone-300">
             Your order for <strong>NextStarter Pro</strong> is confirmed. Here
             is how to get into the private repository and start building.
@@ -92,9 +92,9 @@ const Thanks = () => {
                 {step.id}
               </span>
               <div className="space-y-2">
-                <h3 className="font-medium text-stone-900 dark:text-stone-50">
+                <h2 className="font-medium text-stone-900 dark:text-stone-50">
                   {step.title}
-                </h3>
+                </h2>
                 <p className="text-stone-600 dark:text-stone-400">
                   {step.body}
                 </p>

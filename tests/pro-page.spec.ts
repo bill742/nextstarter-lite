@@ -2,16 +2,23 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+/**
+ * The upsell surface is optional (see src/lib/upsell.ts). With no
+ * NEXT_PUBLIC_PRO_URL the routes 404 by design, so these specs skip rather
+ * than fail — which is the state of a fork, or of any project scaffolded from
+ * this starter.
+ */
+const upsellEnabled = Boolean(process.env.NEXT_PUBLIC_PRO_URL);
+
 test.describe("Pro page", () => {
+  test.skip(!upsellEnabled, "NEXT_PUBLIC_PRO_URL is not set");
   test("Verify the pitch, comparison table, and CTAs are shown", async ({
     page,
   }) => {
     await page.goto("/pro");
 
     await expect(
-      page.getByRole("heading", {
-        name: /NextStarter Pro — the full SaaS stack/,
-      })
+      page.getByRole("heading", { level: 1, name: /NextStarter Pro/ })
     ).toBeVisible();
 
     // The comparison table is the page's answer to "free or paid?" — it must
@@ -110,6 +117,7 @@ test.describe("Pro page", () => {
 });
 
 test.describe("Pro page does not have accessiblity issues", () => {
+  test.skip(!upsellEnabled, "NEXT_PUBLIC_PRO_URL is not set");
   test("Should not have any automatically detectable accessibility issues", async ({
     page,
   }) => {
@@ -166,6 +174,7 @@ test.describe("Pro page does not have accessiblity issues", () => {
  * and this spec file all go away together.
  */
 test.describe("Home page entry points into Pro", () => {
+  test.skip(!upsellEnabled, "NEXT_PUBLIC_PRO_URL is not set");
   test("Pro nav link is a real anchor to /pro, not a scroll button", async ({
     page,
   }) => {
@@ -182,9 +191,7 @@ test.describe("Home page entry points into Pro", () => {
     await proNav.click();
     await expect(page).toHaveURL(/\/pro$/);
     await expect(
-      page.getByRole("heading", {
-        name: /NextStarter Pro — the full SaaS stack/,
-      })
+      page.getByRole("heading", { level: 1, name: /NextStarter Pro/ })
     ).toBeVisible();
   });
 
@@ -232,9 +239,7 @@ test.describe("Home page entry points into Pro", () => {
 
     await expect(page).toHaveURL(/\/pro$/);
     await expect(
-      page.getByRole("heading", {
-        name: /NextStarter Pro — the full SaaS stack/,
-      })
+      page.getByRole("heading", { level: 1, name: /NextStarter Pro/ })
     ).toBeVisible();
   });
 

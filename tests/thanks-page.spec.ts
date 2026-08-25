@@ -2,7 +2,16 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+/**
+ * The upsell surface is optional (see src/lib/upsell.ts). With no
+ * NEXT_PUBLIC_PRO_URL the routes 404 by design, so these specs skip rather
+ * than fail — which is the state of a fork, or of any project scaffolded from
+ * this starter.
+ */
+const upsellEnabled = Boolean(process.env.NEXT_PUBLIC_PRO_URL);
+
 test.describe("Thanks page", () => {
+  test.skip(!upsellEnabled, "NEXT_PUBLIC_PRO_URL is not set");
   test("Verify the confirmation content and next steps are shown", async ({
     page,
   }) => {
@@ -15,7 +24,7 @@ test.describe("Thanks page", () => {
     ).toBeVisible();
 
     const steps = page.getByRole("listitem").filter({
-      has: page.getByRole("heading", { level: 3 }),
+      has: page.getByRole("heading", { level: 2 }),
     });
     await expect(steps).toHaveCount(4);
     await expect(
@@ -55,6 +64,7 @@ test.describe("Thanks page", () => {
 });
 
 test.describe("Thanks page does not have accessiblity issues", () => {
+  test.skip(!upsellEnabled, "NEXT_PUBLIC_PRO_URL is not set");
   test("Should not have any automatically detectable accessibility issues", async ({
     page,
   }) => {
