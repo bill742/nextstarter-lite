@@ -34,7 +34,7 @@ const Upgrade = () => {
             <Button
               asChild
               size="lg"
-              className="dark:to-coral-600 w-full shrink bg-linear-to-r from-orange-700 to-orange-600 font-bold text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] dark:from-orange-600"
+              className="dark:to-coral-600 w-full shrink bg-linear-to-r from-orange-700 to-orange-600 font-bold text-white shadow-lg transition-[scale,box-shadow] hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] dark:from-orange-600"
             >
               <Link href="/pro" rel="noopener noreferrer">
                 See everything in Pro →
@@ -44,7 +44,7 @@ const Upgrade = () => {
             <Button
               asChild
               size="lg"
-              className="dark:to-coral-600 w-full shrink bg-linear-to-r from-orange-700 to-orange-600 font-bold text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] dark:from-orange-600"
+              className="dark:to-coral-600 w-full shrink bg-linear-to-r from-orange-700 to-orange-600 font-bold text-white shadow-lg transition-[scale,box-shadow] hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] dark:from-orange-600"
             >
               <Link href={proUrl} rel="noopener noreferrer" target="_blank">
                 Buy now

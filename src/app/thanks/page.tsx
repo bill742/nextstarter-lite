@@ -107,7 +107,7 @@ const Thanks = () => {
           <Button
             asChild
             size="lg"
-            className="dark:to-coral-600 bg-linear-to-r from-orange-700 to-orange-600 font-bold text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] dark:from-orange-600"
+            className="dark:to-coral-600 bg-linear-to-r from-orange-700 to-orange-600 font-bold text-white shadow-lg transition-[scale,box-shadow] hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] dark:from-orange-600"
           >
             <Link href={portalUrl} target="_blank" rel="noopener noreferrer">
               Open your customer portal
