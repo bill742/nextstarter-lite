@@ -11,7 +11,7 @@ import { useScrollToSection } from "@/lib/use-scroll-to-section";
  * @param href - The href from a navigation item.
  * @returns `true` for a route, `false` for an on-page section.
  */
-export const isRouteHref = (href: string) => href.startsWith("/");
+const isRouteHref = (href: string) => href.startsWith("/");
 
 interface NavLinkProps {
   children: React.ReactNode;

@@ -11,3 +11,21 @@ allowBuilds:
 onlyBuiltDependencies:
   - sharp
   - unrs-resolver
+
+# Supply-chain hardening.
+#
+# `minimumReleaseAge` refuses to install any version published less than 7 days
+# ago. Compromised releases are typically caught and unpublished within hours,
+# so the delay means a hijacked package expires before it can reach an install.
+minimumReleaseAge: 10080
+# `no-downgrade` rejects an update whose trust signals (provenance attestation,
+# signatures) are weaker than the version already in the lockfile — the shape a
+# hijacked release usually takes.
+trustPolicy: no-downgrade
+# How long trust downgrades are actually enforced for. pnpm exempts anything
+# published longer ago than this, so it must stay well above minimumReleaseAge —
+# set to the same 7 days the two would cancel out and trustPolicy would never
+# fire. 90 days keeps a real enforcement window over the period a hijacked
+# release would plausibly still be live, without failing installs over the
+# ordinary publishing-infrastructure changes visible in years-old packages.
+trustPolicyIgnoreAfter: 129600

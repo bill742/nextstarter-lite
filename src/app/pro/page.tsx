@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import ProPage from "@/components/pro";
+import { jsonLd } from "@/lib/schema";
 import { isUpsellEnabled } from "@/lib/upsell";
 
 import { faqSchema, proBreadcrumbSchema } from "./schema";
@@ -49,13 +50,13 @@ const Pro = () => {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(proBreadcrumbSchema),
+          __html: jsonLd(proBreadcrumbSchema),
         }}
       />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqSchema),
+          __html: jsonLd(faqSchema),
         }}
       />
     </div>

@@ -9,7 +9,8 @@ import Footer from "@/components/footer";
 import Header from "@/components/header";
 import SkipNav from "@/components/skip-nav";
 import { ThemeProvider } from "@/components/theme-provider";
-import { organizationSchema, softwareSchema } from "@/lib/schema";
+import { jsonLd, organizationSchema, softwareSchema } from "@/lib/schema";
+import { metadataBaseUrl } from "@/lib/utils";
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -35,9 +36,7 @@ export const metadata: Metadata = {
     "accessible next.js template",
     "wcag next.js boilerplate",
   ],
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-  ),
+  metadataBase: metadataBaseUrl,
   openGraph: {
     description:
       "Free, WCAG 2.1 AA verified Next.js boilerplate. TypeScript, Tailwind, shadcn/ui, Playwright, and CI configured out of the box.",
@@ -104,13 +103,13 @@ const RootLayout = ({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(softwareSchema),
+            __html: jsonLd(softwareSchema),
           }}
         />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationSchema),
+            __html: jsonLd(organizationSchema),
           }}
         />
       </body>
