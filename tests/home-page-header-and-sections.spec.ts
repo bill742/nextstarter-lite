@@ -18,7 +18,7 @@ test.describe("Home page header and navigation", () => {
     const h1 = page.locator("h1");
     await expect(h1).toHaveCount(1);
     await expect(h1).toHaveText(
-      `About ${process.env.NEXT_PUBLIC_SITE_NAME} — the accessible Next.js boilerplate`
+      `About ${process.env.NEXT_PUBLIC_SITE_NAME} - the accessible Next.js boilerplate`
     );
 
     const nav = page.getByRole("navigation");

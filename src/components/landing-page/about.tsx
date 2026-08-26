@@ -14,15 +14,16 @@ const About = () => {
       >
         <div className="space-y-6">
           <h1 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">
-            About {process.env.NEXT_PUBLIC_SITE_NAME} — the accessible Next.js
+            About {process.env.NEXT_PUBLIC_SITE_NAME} - the accessible Next.js
             boilerplate
           </h1>
           <p className="mx-auto max-w-2xl text-lg leading-relaxed text-stone-600 md:text-xl dark:text-stone-300">
             {process.env.NEXT_PUBLIC_SITE_NAME} is a free, open source{" "}
             <strong>Next.js</strong> boilerplate that hands you a project
-            already set up — TypeScript, Tailwind, and shadcn/ui wired together,
-            with the linting, formatting, and testing decisions made for you.
-            Skip the weekend of configuration and start on the product instead.
+            already set up. TypeScript, Tailwind, and shadcn/ui are wired
+            together, with the linting, formatting, and testing decisions made
+            for you. Skip the weekend of configuration and start on the product
+            instead.
           </p>
 
           <p className="mx-auto max-w-2xl text-lg leading-relaxed text-stone-600 md:text-xl dark:text-stone-300">
