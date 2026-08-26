@@ -28,7 +28,7 @@ export const faqSections: FaqSection[] = [
     items: [
       {
         answer:
-          "Instant access to the private NextStarter Pro GitHub repository. On purchase you're added as a collaborator automatically, so you can clone the repo and start building right away — plus every future update.",
+          "Instant access to the private NextStarter Pro GitHub repository. After checkout you connect your GitHub account in the customer portal, GitHub emails you a collaborator invitation, and accepting it lets you clone the repo and start building — usually within a couple of minutes of paying. Every future update comes with it.",
         id: "what-you-get",
         question: "What do I actually get when I buy?",
       },
