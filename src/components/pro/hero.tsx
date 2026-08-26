@@ -22,7 +22,7 @@ const Hero = () => {
   return (
     <>
       <section
-        className="mx-auto flex min-h-[60vh] max-w-4xl flex-col items-center justify-center px-6 py-24 text-center md:py-32"
+        className="mx-auto flex min-h-[60vh] max-w-4xl scroll-mt-20 flex-col items-center justify-center px-6 py-24 text-center md:py-32"
         id="overview"
       >
         <div className="space-y-6">

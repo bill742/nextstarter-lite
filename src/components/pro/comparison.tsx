@@ -61,7 +61,7 @@ const Comparison = () => {
   return (
     <>
       <section
-        className="mx-auto max-w-5xl px-6 py-24 md:py-32"
+        className="mx-auto max-w-5xl scroll-mt-20 px-6 py-24 md:py-32"
         id="compare"
         aria-labelledby="compare-heading"
       >
@@ -79,7 +79,14 @@ const Comparison = () => {
             </p>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-900/50">
+          {/* `relative` is load-bearing: each cell's "Included" text is
+              `sr-only`, which positions it absolutely. Without a positioned
+              ancestor those spans resolve against the page instead of this
+              scroller, so they escape its clip and sit past the right edge —
+              giving the whole page a horizontal scrollbar under ~425px wide.
+              Positioning the scroller makes it their containing block, and the
+              overflow that belongs to the table stays inside the table. */}
+          <div className="relative overflow-x-auto rounded-2xl border border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-900/50">
             <table className="w-full min-w-md border-collapse text-left">
               <caption className="sr-only">
                 A feature comparison of the free NextStarter starter and

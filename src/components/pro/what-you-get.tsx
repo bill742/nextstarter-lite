@@ -35,7 +35,7 @@ const WhatYouGet = () => {
   return (
     <>
       <section
-        className="mx-auto max-w-5xl px-6 py-24 md:py-32"
+        className="mx-auto max-w-5xl scroll-mt-20 px-6 py-24 md:py-32"
         id="delivery"
         aria-labelledby="delivery-heading"
       >

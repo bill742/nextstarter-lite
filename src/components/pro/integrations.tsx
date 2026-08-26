@@ -98,7 +98,10 @@ const integrations: Integration[] = [
 const Integrations = () => {
   return (
     <>
-      <section className="mx-auto max-w-5xl px-6 py-24 md:py-32" id="included">
+      <section
+        className="mx-auto max-w-5xl scroll-mt-20 px-6 py-24 md:py-32"
+        id="included"
+      >
         <div className="space-y-8">
           <div className="space-y-4 text-center">
             <h2 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">

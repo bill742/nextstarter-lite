@@ -70,6 +70,59 @@ test.describe("Pro page", () => {
     await expect(answer).toBeVisible();
   });
 
+  test("Verify the section nav reaches each anchor on the page", async ({
+    page,
+  }) => {
+    await page.goto("/pro");
+
+    const sectionNav = page.getByRole("navigation", { name: "On this page" });
+
+    // Real anchors, not scroll buttons: the href is what a reader copies and
+    // what a crawler follows down into the page's sections.
+    const included = sectionNav.getByRole("link", { name: "What Pro adds" });
+    await expect(included).toHaveAttribute("href", "#included");
+
+    await included.click();
+    await expect(page.locator("section#included")).toBeInViewport();
+
+    // The nav stays put and reports where the reader is.
+    await expect(sectionNav).toBeInViewport();
+    await expect(included).toHaveAttribute("aria-current", "location");
+
+    const faq = sectionNav.getByRole("link", { name: "FAQ" });
+    await faq.click();
+    await expect(page.locator("section#faq")).toBeInViewport();
+    await expect(faq).toHaveAttribute("aria-current", "location");
+    await expect(included).not.toHaveAttribute("aria-current", "location");
+  });
+
+  test("Verify the page does not scroll sideways on a narrow screen", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 800, width: 360 });
+    await page.goto("/pro");
+
+    // The comparison table is wider than a phone and scrolls inside its own
+    // container. Anything that escapes that container — an sr-only span is
+    // positioned absolutely, so it will, unless the scroller is its
+    // containing block — turns into a horizontal scrollbar on the whole page.
+    const layout = await page.evaluate(() => {
+      const scroller = document.querySelector("#compare .overflow-x-auto");
+
+      return {
+        pageScrolls:
+          document.documentElement.scrollWidth >
+          document.documentElement.clientWidth,
+        tableScrolls: scroller
+          ? scroller.scrollWidth > scroller.clientWidth
+          : false,
+      };
+    });
+
+    expect(layout.pageScrolls).toBe(false);
+    expect(layout.tableScrolls).toBe(true);
+  });
+
   test("Verify metadata and structured data", async ({ page }) => {
     await page.goto("/pro");
 

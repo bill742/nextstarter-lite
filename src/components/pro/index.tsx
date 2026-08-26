@@ -3,6 +3,7 @@ import Faq from "./faq";
 import FinalCta from "./final-cta";
 import Hero from "./hero";
 import Integrations from "./integrations";
+import SectionNav from "./section-nav";
 import WhatYouGet from "./what-you-get";
 
 /**
@@ -19,6 +20,10 @@ const ProPage = () => {
   return (
     <>
       <Hero />
+
+      {/* Sticky from here down: the hero has the h1 and the first CTA, so the
+          section nav only earns its space once the reader scrolls past it. */}
+      <SectionNav />
 
       <Comparison />
 
