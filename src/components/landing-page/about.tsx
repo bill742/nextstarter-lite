@@ -1,3 +1,5 @@
+import AboutCtas from "./about-ctas";
+
 /**
  * About section component
  * Describes the purpose and features of the Next.js boilerplate project
@@ -12,21 +14,26 @@ const About = () => {
       >
         <div className="space-y-6">
           <h1 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">
-            About {process.env.NEXT_PUBLIC_SITE_NAME}
+            About {process.env.NEXT_PUBLIC_SITE_NAME} — the accessible Next.js
+            boilerplate
           </h1>
           <p className="mx-auto max-w-2xl text-lg leading-relaxed text-stone-600 md:text-xl dark:text-stone-300">
-            This is a boilerplate I put together for creating my front-end
-            projects with <strong>NextJS</strong>, TypeScript, and Tailwind. It
-            includes all of the linting and formatting rules that I like to use
-            with ESLint and Prettier as well as a theme switcher for dark and
-            light modes. It also includes a few other niceties like a custom 404
-            page, robots.txt and sitemap.xml files, and VS Code settings.
+            {process.env.NEXT_PUBLIC_SITE_NAME} is a free, open source{" "}
+            <strong>Next.js</strong> boilerplate that hands you a project
+            already set up — TypeScript, Tailwind, and shadcn/ui wired together,
+            with the linting, formatting, and testing decisions made for you.
+            Skip the weekend of configuration and start on the product instead.
           </p>
 
           <p className="mx-auto max-w-2xl text-lg leading-relaxed text-stone-600 md:text-xl dark:text-stone-300">
-            To begin your project, please see the{" "}
-            <strong>Getting Started</strong> section below.
+            It is accessible from the first commit: WCAG 2.1 AA verified with
+            Axe-core, perfect Lighthouse scores enforced in CI, and Playwright
+            end-to-end tests running against Chromium, Firefox, and WebKit.
           </p>
+
+          <div className="pt-2">
+            <AboutCtas />
+          </div>
         </div>
       </section>
       {/* Divider */}

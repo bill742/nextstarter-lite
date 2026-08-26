@@ -20,6 +20,10 @@ const GettingStarted = () => {
             Getting Started
           </h2>
 
+          <p className="mx-auto max-w-2xl text-center text-lg text-stone-600 dark:text-stone-300">
+            One command to scaffold. MIT licensed, no sign up.
+          </p>
+
           <div className="mx-auto max-w-3xl space-y-6">
             <ol className="space-y-4">
               <li className="flex gap-4 rounded-lg border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900/50">

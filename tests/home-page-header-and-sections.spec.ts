@@ -1,5 +1,8 @@
 import { expect, test } from "@playwright/test";
 
+/** Mirrors `isUpsellEnabled` — the `#pro` teaser only renders when it is set. */
+const upsellEnabled = Boolean(process.env.NEXT_PUBLIC_PRO_URL);
+
 test.describe("Home page header and navigation", () => {
   test("Verify header, h1 tag, and navigation are readable", async ({
     page,
@@ -14,7 +17,9 @@ test.describe("Home page header and navigation", () => {
     // one and wasted the strongest on-page heading signal.
     const h1 = page.locator("h1");
     await expect(h1).toHaveCount(1);
-    await expect(h1).toHaveText(`About ${process.env.NEXT_PUBLIC_SITE_NAME}`);
+    await expect(h1).toHaveText(
+      `About ${process.env.NEXT_PUBLIC_SITE_NAME} — the accessible Next.js boilerplate`
+    );
 
     const nav = page.getByRole("navigation");
     await expect(nav).toBeVisible();
@@ -97,6 +102,24 @@ test.describe("Home page navigation scroll behavior", () => {
     await expect(
       page.getByRole("heading", { name: "Getting Started" })
     ).toBeInViewport();
+  });
+
+  test("About CTA scrolls the Getting Started section into view", async ({
+    page,
+  }) => {
+    await page.getByRole("button", { name: "Start a project" }).click();
+
+    await expect(page.locator("section#getting-started")).toBeInViewport();
+  });
+
+  // The Pro teaser is the last section on the page, so this button is the only
+  // way to reach it without scrolling the whole page.
+  test("About Pro CTA scrolls the Pro teaser into view", async ({ page }) => {
+    test.skip(!upsellEnabled, "NEXT_PUBLIC_PRO_URL is not set");
+
+    await page.getByRole("button", { name: "See what Pro adds" }).click();
+
+    await expect(page.locator("section#pro")).toBeInViewport();
   });
 });
 
