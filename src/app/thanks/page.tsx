@@ -104,15 +104,23 @@ const Thanks = () => {
         </ol>
 
         <div className="mt-12 flex flex-col items-center gap-4">
-          <Button
-            asChild
-            size="lg"
-            className="dark:to-coral-600 bg-linear-to-r from-orange-700 to-orange-600 font-bold text-white shadow-lg transition-[scale,box-shadow] hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] dark:from-orange-600"
-          >
-            <Link href={portalUrl} target="_blank" rel="noopener noreferrer">
-              Open your customer portal
-            </Link>
-          </Button>
+          {/*
+            The portal is a separate opt-in from the checkout link: a project
+            can be selling something with no portal configured yet. Rendering
+            the button anyway gave it `href=""`, which reloads this page — so
+            it follows its own variable, the way the support line does.
+          */}
+          {portalUrl ? (
+            <Button
+              asChild
+              size="lg"
+              className="dark:to-coral-600 bg-linear-to-r from-orange-700 to-orange-600 font-bold text-white shadow-lg transition-[scale,box-shadow] hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] dark:from-orange-600"
+            >
+              <Link href={portalUrl} target="_blank" rel="noopener noreferrer">
+                Open your customer portal
+              </Link>
+            </Button>
+          ) : null}
           {supportEmail ? (
             <p className="text-center text-sm text-stone-600 dark:text-stone-400">
               Something not right with your order?{" "}
