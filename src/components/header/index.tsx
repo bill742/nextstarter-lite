@@ -76,7 +76,7 @@ const Header = () => {
 
       {/* Animated border accent */}
       <div
-        className={`h-[px absolute bottom-0 left-0 bg-linear-to-r from-transparent via-orange-500 to-transparent transition-opacity duration-300 ${
+        className={`absolute bottom-0 left-0 h-px bg-linear-to-r from-transparent via-orange-500 to-transparent transition-opacity duration-300 ${
           isScrolled ? "w-full opacity-100" : "w-0 opacity-0"
         }`}
       />
