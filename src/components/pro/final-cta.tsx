@@ -17,10 +17,17 @@ import ProCta from "./pro-cta";
  */
 const FinalCta = () => {
   return (
-    <section className="mx-auto max-w-5xl px-6 py-24 md:py-32" id="buy">
+    <section
+      className="mx-auto max-w-5xl px-6 py-24 md:py-32"
+      id="buy"
+      aria-labelledby="buy-heading"
+    >
       <div className="rounded-2xl border-2 border-orange-300 bg-white p-8 text-center shadow-lg md:p-12 dark:border-orange-800/70 dark:bg-stone-900/50">
         <div className="space-y-4">
-          <h2 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">
+          <h2
+            className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50"
+            id="buy-heading"
+          >
             Start building today
           </h2>
           <p className="mx-auto max-w-2xl text-lg leading-relaxed text-stone-600 dark:text-stone-300">

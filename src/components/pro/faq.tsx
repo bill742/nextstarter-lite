@@ -14,10 +14,17 @@ import { faqSections } from "@/lib/faq";
 const Faq = () => {
   return (
     <>
-      <section className="mx-auto max-w-5xl px-6 py-24 md:py-32" id="faq">
+      <section
+        className="mx-auto max-w-5xl px-6 py-24 md:py-32"
+        id="faq"
+        aria-labelledby="faq-heading"
+      >
         <div className="space-y-8">
           <div className="space-y-4 text-center">
-            <h2 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">
+            <h2
+              className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50"
+              id="faq-heading"
+            >
               Frequently asked questions
             </h2>
             <p className="mx-auto max-w-2xl text-lg leading-relaxed text-stone-600 dark:text-stone-300">

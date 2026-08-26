@@ -102,7 +102,7 @@ const Integrations = () => {
         <div className="space-y-8">
           <div className="space-y-4 text-center">
             <h2 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">
-              What Pro adds
+              What Pro adds: auth, payments, database, and i18n
             </h2>
             <p className="mx-auto max-w-2xl text-lg leading-relaxed text-stone-600 dark:text-stone-300">
               Nine integrations, configured and typed — not a list of packages
@@ -114,12 +114,16 @@ const Integrations = () => {
 
           <div className="mx-auto max-w-3xl space-y-10">
             {integrations.map((integration) => (
-              <article
+              <section
                 key={integration.id}
                 className="space-y-3 rounded-lg border border-stone-200 bg-white p-6 md:p-8 dark:border-stone-800 dark:bg-stone-900/50"
                 id={integration.id}
+                aria-labelledby={`${integration.id}-heading`}
               >
-                <h3 className="font-serif text-xl font-bold text-stone-900 md:text-2xl dark:text-stone-50">
+                <h3
+                  className="font-serif text-xl font-bold text-stone-900 md:text-2xl dark:text-stone-50"
+                  id={`${integration.id}-heading`}
+                >
                   {integration.title}
                 </h3>
                 {integration.body.map((paragraph) => (
@@ -130,7 +134,7 @@ const Integrations = () => {
                     {paragraph}
                   </p>
                 ))}
-              </article>
+              </section>
             ))}
           </div>
         </div>

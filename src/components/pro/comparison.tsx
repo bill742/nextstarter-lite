@@ -60,10 +60,17 @@ Mark.displayName = "Mark";
 const Comparison = () => {
   return (
     <>
-      <section className="mx-auto max-w-5xl px-6 py-24 md:py-32" id="compare">
+      <section
+        className="mx-auto max-w-5xl px-6 py-24 md:py-32"
+        id="compare"
+        aria-labelledby="compare-heading"
+      >
         <div className="space-y-8">
           <div className="space-y-4 text-center">
-            <h2 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">
+            <h2
+              className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50"
+              id="compare-heading"
+            >
               Free vs. Pro
             </h2>
             <p className="mx-auto max-w-2xl text-lg leading-relaxed text-stone-600 dark:text-stone-300">
