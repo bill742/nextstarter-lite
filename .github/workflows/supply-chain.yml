@@ -1,0 +1,49 @@
+# Supply-chain verification.
+#
+# npm has no install-time equivalent of pnpm's `trustPolicy: no-downgrade`, so
+# the trust check runs in CI instead. `npm audit signatures` verifies every
+# installed package's tarball against the signature the registry published for
+# it, and reports how many carry a provenance attestation proving which build
+# produced them. A tampered or unsigned package fails the job.
+#
+# The release-age half of the hardening lives in .github/dependabot.yml.
+
+name: Supply chain
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    # Weekly, matching the cadence of the ESLint workflow. Catches a package
+    # that is revoked or re-signed after it was already in the lockfile.
+    - cron: "25 23 * * 5"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify dependency signatures
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      # `npm ci` installs strictly from package-lock.json, so this verifies the
+      # exact tree a build would use rather than a fresh resolution.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify registry signatures
+        run: npm audit signatures
+
+      # Known advisories. Scoped to high and above so a low-severity transitive
+      # advisory does not block every pull request.
+      - name: Audit for known vulnerabilities
+        run: npm audit --audit-level=high

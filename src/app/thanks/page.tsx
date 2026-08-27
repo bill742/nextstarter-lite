@@ -1,20 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-
-/**
- * Polar customer portal for this organization. Buyers sign in with the email
- * they used at checkout (Polar sends a one-time code) to claim their benefits,
- * re-download invoices, and manage the order.
- */
-const portalUrl =
-  process.env.NEXT_PUBLIC_POLAR_PORTAL_URL ||
-  "https://polar.sh/742-studios/portal";
-
-/** Where buyers should write if an order or repo invite goes wrong. */
-const supportEmail =
-  process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "bill@billdean.me";
+import { isUpsellEnabled, portalUrl, supportEmail } from "@/lib/upsell";
 
 /** The post-purchase steps, rendered as a numbered checklist. */
 const steps = [
@@ -68,6 +57,9 @@ export const metadata: Metadata = {
  * @returns The order confirmation page with next steps.
  */
 const Thanks = () => {
+  // A post-purchase page only makes sense where a purchase is possible.
+  if (!isUpsellEnabled) notFound();
+
   return (
     <div className="min-h-screen pt-16">
       <main className="mx-auto max-w-5xl px-6 py-24 md:py-32" id="main">
@@ -78,9 +70,9 @@ const Thanks = () => {
           >
             ✓
           </span>
-          <h2 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">
+          <h1 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">
             Thank you for your purchase
-          </h2>
+          </h1>
           <p className="mx-auto max-w-2xl text-lg leading-relaxed text-stone-600 dark:text-stone-300">
             Your order for <strong>NextStarter Pro</strong> is confirmed. Here
             is how to get into the private repository and start building.
@@ -100,9 +92,9 @@ const Thanks = () => {
                 {step.id}
               </span>
               <div className="space-y-2">
-                <h3 className="font-medium text-stone-900 dark:text-stone-50">
+                <h2 className="font-medium text-stone-900 dark:text-stone-50">
                   {step.title}
-                </h3>
+                </h2>
                 <p className="text-stone-600 dark:text-stone-400">
                   {step.body}
                 </p>
@@ -112,25 +104,35 @@ const Thanks = () => {
         </ol>
 
         <div className="mt-12 flex flex-col items-center gap-4">
-          <Button
-            asChild
-            size="lg"
-            className="dark:to-coral-600 bg-linear-to-r from-orange-700 to-orange-600 font-bold text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] dark:from-orange-600"
-          >
-            <Link href={portalUrl} target="_blank" rel="noopener noreferrer">
-              Open your customer portal
-            </Link>
-          </Button>
-          <p className="text-center text-sm text-stone-600 dark:text-stone-400">
-            Something not right with your order?{" "}
-            <a
-              href={`mailto:${supportEmail}`}
-              className="underline transition-colors hover:text-orange-700 dark:hover:text-orange-400"
+          {/*
+            The portal is a separate opt-in from the checkout link: a project
+            can be selling something with no portal configured yet. Rendering
+            the button anyway gave it `href=""`, which reloads this page — so
+            it follows its own variable, the way the support line does.
+          */}
+          {portalUrl ? (
+            <Button
+              asChild
+              size="lg"
+              className="dark:to-coral-600 bg-linear-to-r from-orange-700 to-orange-600 font-bold text-white shadow-lg transition-[scale,box-shadow] hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] dark:from-orange-600"
             >
-              Email {supportEmail}
-            </a>{" "}
-            and include the email address you used at checkout.
-          </p>
+              <Link href={portalUrl} target="_blank" rel="noopener noreferrer">
+                Open your customer portal
+              </Link>
+            </Button>
+          ) : null}
+          {supportEmail ? (
+            <p className="text-center text-sm text-stone-600 dark:text-stone-400">
+              Something not right with your order?{" "}
+              <a
+                href={`mailto:${supportEmail}`}
+                className="underline transition-colors hover:text-orange-700 dark:hover:text-orange-400"
+              >
+                Email {supportEmail}
+              </a>{" "}
+              and include the email address you used at checkout.
+            </p>
+          ) : null}
           <Link
             href="/"
             className="text-sm text-stone-600 underline transition-colors hover:text-orange-700 dark:text-stone-400 dark:hover:text-orange-400"

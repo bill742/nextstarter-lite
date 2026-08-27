@@ -5,9 +5,38 @@
 # `allowBuilds` is the pnpm 11+ setting; `onlyBuiltDependencies` is the
 # pnpm 10.x equivalent. Both are listed so the template installs cleanly
 # regardless of which pnpm version the user has. The unused key is ignored.
+#
+# This file only matters to people who install this starter with pnpm.
+# create-nextstarter removes it when a new project chooses npm, bun, or yarn.
 allowBuilds:
   sharp: true
   unrs-resolver: true
 onlyBuiltDependencies:
   - sharp
   - unrs-resolver
+
+# Supply-chain hardening for pnpm installs.
+#
+# `minimumReleaseAge` refuses to install any version published less than 7 days
+# ago. Compromised releases are typically caught and unpublished within hours,
+# so the delay means a hijacked package expires before it can reach an install.
+# It degrades gently: pnpm resolves to the newest version older than the
+# threshold instead of failing outright.
+#
+# `trustPolicy: no-downgrade` is deliberately NOT set here. It hard-fails an
+# install (ERR_PNPM_TRUST_DOWNGRADE) whenever a package's trust signals weaken
+# between versions, which happens for ordinary publishing-infrastructure
+# changes as often as for real attacks. That is too sharp an edge for a
+# template, where it would break a brand-new project on its first command.
+#
+# This repository's own supply-chain checks live in .github/dependabot.yml
+# (release cooldown) and .github/workflows/supply-chain.yml (signature
+# verification), which run on npm, the package manager this repo installs with.
+#
+# react-doctor/require-pnpm-hardening flags the missing `trustPolicy` on every
+# scan. Reviewed 2026-08-25 and accepted as a waiver, not a false positive: the
+# exposure is real, but it applies to a file that never runs on this repo's own
+# install path. Revisit if this repo ever adopts pnpm as its package manager —
+# a tracked pnpm-lock.yaml is the signal — since the npm-side checks above
+# would no longer cover the install.
+minimumReleaseAge: 10080

@@ -13,19 +13,15 @@ const LandingPage = () => {
   return (
     <>
       <ScrollTargetRestorer />
-      <h2 className="sr-only">
-        NextStarter - A modern Next.js boilerplate for building production-ready
-        web applications.
-      </h2>
       <About />
 
       <Stack />
 
       <Features />
 
-      <Upgrade />
-
       <GettingStarted />
+
+      <Upgrade />
     </>
   );
 };

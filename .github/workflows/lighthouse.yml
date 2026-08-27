@@ -1,0 +1,50 @@
+name: Lighthouse
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+jobs:
+  lighthouse:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    strategy:
+      # Report both, and let one fail without hiding the other's result.
+      fail-fast: false
+      matrix:
+        include:
+          - preset: mobile
+            config: ./lighthouserc.js
+          - preset: desktop
+            config: ./lighthouserc.desktop.js
+    name: ${{ matrix.preset }}
+    env:
+      NEXT_PUBLIC_SITE_URL: https://www.nextstarter.app
+      NEXT_PUBLIC_SITE_NAME: NextStarter
+      NEXT_PUBLIC_SITE_META_DESCRIPTION: A modern Next.js boilerplate for building production-ready web applications.
+      # Matches playwright.yml: kept as a repo variable so the marketing surface
+      # can be switched on for this repo without pinning forks to someone
+      # else's storefront. Only affects which sections render; the audited URL
+      # is the home page either way.
+      NEXT_PUBLIC_PRO_URL: ${{ vars.NEXT_PUBLIC_PRO_URL }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+        cache: 'npm'
+    - name: Install dependencies
+      run: npm ci
+    - name: Build Next.js app
+      run: npm run build
+    - name: Run Lighthouse CI
+      # Lighthouse CI starts the production server itself (startServerCommand)
+      # and asserts against the median of three runs. Thresholds and the
+      # reasoning behind them live in the config files.
+      run: npx --yes @lhci/cli@0.15.x autorun --config=${{ matrix.config }}
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: lighthouse-report-${{ matrix.preset }}
+        path: .lighthouseci/
+        retention-days: 30

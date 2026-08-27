@@ -1,5 +1,8 @@
 import { expect, test } from "@playwright/test";
 
+/** Mirrors `isUpsellEnabled` — the `#pro` teaser only renders when it is set. */
+const upsellEnabled = Boolean(process.env.NEXT_PUBLIC_PRO_URL);
+
 test.describe("Home page header and navigation", () => {
   test("Verify header, h1 tag, and navigation are readable", async ({
     page,
@@ -9,8 +12,14 @@ test.describe("Home page header and navigation", () => {
     const header = page.locator("header");
     await expect(header).toBeVisible();
 
-    const h1 = await page.locator("h1").textContent();
-    expect(h1?.trim()).toBe(process.env.NEXT_PUBLIC_SITE_NAME);
+    // Exactly one h1, and it is page content rather than the logo — the logo
+    // repeats on every route, so using it as the h1 gave every page the same
+    // one and wasted the strongest on-page heading signal.
+    const h1 = page.locator("h1");
+    await expect(h1).toHaveCount(1);
+    await expect(h1).toHaveText(
+      `About ${process.env.NEXT_PUBLIC_SITE_NAME} - the accessible Next.js boilerplate`
+    );
 
     const nav = page.getByRole("navigation");
     await expect(nav).toBeVisible();
@@ -94,6 +103,24 @@ test.describe("Home page navigation scroll behavior", () => {
       page.getByRole("heading", { name: "Getting Started" })
     ).toBeInViewport();
   });
+
+  test("About CTA scrolls the Getting Started section into view", async ({
+    page,
+  }) => {
+    await page.getByRole("button", { name: "Start a project" }).click();
+
+    await expect(page.locator("section#getting-started")).toBeInViewport();
+  });
+
+  // The Pro teaser is the last section on the page, so this button is the only
+  // way to reach it without scrolling the whole page.
+  test("About Pro CTA scrolls the Pro teaser into view", async ({ page }) => {
+    test.skip(!upsellEnabled, "NEXT_PUBLIC_PRO_URL is not set");
+
+    await page.getByRole("button", { name: "See what Pro adds" }).click();
+
+    await expect(page.locator("section#pro")).toBeInViewport();
+  });
 });
 
 test.describe("Home page section item counts", () => {
@@ -105,75 +132,11 @@ test.describe("Home page section item counts", () => {
     await expect(page.locator("section#stack ul li")).toHaveCount(6);
   });
 
-  test("Features section displays 10 features", async ({ page }) => {
-    await expect(page.locator("section#features ul li")).toHaveCount(10);
+  test("Features section displays 11 features", async ({ page }) => {
+    await expect(page.locator("section#features ul li")).toHaveCount(11);
   });
 
   test("Getting Started section displays 4 steps", async ({ page }) => {
     await expect(page.locator("section#getting-started ol li")).toHaveCount(4);
-  });
-});
-
-test.describe("Home page upgrade (Pro) section", () => {
-  test("Pro nav link scrolls the upgrade section into view", async ({
-    page,
-  }) => {
-    await page.goto("./");
-    await page
-      .getByRole("navigation")
-      .getByRole("button", { name: "Pro" })
-      .click();
-
-    await expect(page.locator("section#pro")).toBeInViewport();
-    await expect(
-      page.getByRole("heading", { name: "Upgrade to NextStarter Pro" })
-    ).toBeInViewport();
-  });
-
-  test("shows Free and Pro plans with an external Get Pro CTA", async ({
-    page,
-  }) => {
-    await page.goto("./");
-    const pro = page.locator("section#pro");
-
-    await expect(pro.getByRole("heading", { name: "Free" })).toBeVisible();
-    await expect(
-      pro.getByRole("heading", { exact: true, name: "Pro" })
-    ).toBeVisible();
-
-    const cta = pro.getByRole("link", { name: "Get NextStarter Pro" });
-    await expect(cta).toBeVisible();
-    await expect(cta).toHaveAttribute("target", "_blank");
-    expect(await cta.getAttribute("href")).toMatch(/^https?:\/\//);
-  });
-
-  test("Get Pro CTA points at the configured purchase URL, off this site", async ({
-    page,
-  }) => {
-    const proUrl = process.env.NEXT_PUBLIC_PRO_URL;
-
-    // Skips where the purchase URL isn't configured — a fresh clone of this
-    // starter has no checkout link of its own yet.
-    test.skip(
-      !proUrl,
-      "NEXT_PUBLIC_PRO_URL is not set in this environment; nothing to verify"
-    );
-
-    await page.goto("./");
-    const href = await page
-      .locator("section#pro")
-      .getByRole("link", { name: "Get NextStarter Pro" })
-      .getAttribute("href");
-
-    // Catches a build that didn't pick the variable up.
-    expect(href).toBe(proUrl);
-
-    // Catches the failure that silently kills sales: the component falls back
-    // to the marketing site when the variable is missing, so the buy button
-    // links to the very page it sits on and every test above still passes.
-    const siteOrigin = new URL(
-      process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-    ).origin;
-    expect(new URL(href as string).origin).not.toBe(siteOrigin);
   });
 });

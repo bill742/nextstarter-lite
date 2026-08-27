@@ -1,36 +1,36 @@
-"use client";
+import NavLink from "@/components/nav-link";
+import { isUpsellEnabled } from "@/lib/upsell";
 
-import { useScrollToSection } from "@/lib/use-scroll-to-section";
-
-const quickLinkItems = [
+const allQuickLinkItems = [
   { href: "#about", id: 1, label: "About" },
   { href: "#stack", id: 2, label: "Tech Stack" },
   { href: "#features", id: 3, label: "Features" },
-  { href: "#pro", id: 5, label: "Upgrade to Pro" },
+  { href: "/pro", id: 5, label: "Upgrade to Pro" },
   { href: "#getting-started", id: 4, label: "Getting Started" },
 ];
 
+/** Filtered so the footer never links to a switched-off route. */
+const quickLinkItems = allQuickLinkItems.filter(
+  (item) => item.href !== "/pro" || isUpsellEnabled
+);
+
 /**
  * Quick navigation links component for footer
- * Renders a list of clickable links that smoothly scroll to different sections of the page
+ * Renders links that either smoothly scroll to a section of the landing page
+ * or navigate to another route
  * @returns List of quick navigation links with hover effects
  */
 const QuickLinks = () => {
-  const scrollToSection = useScrollToSection();
-
   return (
     <ul className="space-y-2 text-sm">
       {quickLinkItems.map((link) => (
         <li key={link.id}>
-          <button
-            type="button"
-            onClick={() => scrollToSection(link.href.substring(1))}
+          <NavLink
+            href={link.href}
             className="text-stone-600 transition-colors hover:text-orange-800 dark:text-stone-400 dark:hover:text-orange-400"
-            aria-label={link.label}
           >
             {link.label}
-            <div className="bg-primary absolute bottom-0 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full"></div>
-          </button>
+          </NavLink>
         </li>
       ))}
     </ul>

@@ -28,7 +28,7 @@ const Cta = ({ onNavigate }: CtaProps) => {
   return (
     <button
       type="button"
-      className="dark:to-coral-600 hidden rounded-lg bg-linear-to-r from-orange-700 to-orange-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:scale-[1.02] hover:shadow-md active:scale-[0.98] sm:block dark:from-orange-800"
+      className="dark:to-coral-600 hidden rounded-lg bg-linear-to-r from-orange-700 to-orange-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-[scale,box-shadow] hover:scale-[1.02] hover:shadow-md active:scale-[0.98] sm:block dark:from-orange-800"
       onClick={handleClick}
       aria-label="Get Started"
     >

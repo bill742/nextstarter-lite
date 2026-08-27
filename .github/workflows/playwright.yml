@@ -24,6 +24,13 @@ jobs:
       # starter aren't pinned to someone else's storefront. When it is unset the
       # CTA assertion skips; when set, CI proves the button really points at it.
       NEXT_PUBLIC_PRO_URL: ${{ vars.NEXT_PUBLIC_PRO_URL }}
+      # The /thanks page's customer portal and support address, same deal: repo
+      # variables, and the assertions that need them skip when they are unset.
+      # Without these the checkout link alone switched the whole upsell surface
+      # on, so the thanks specs ran against a page whose portal link and support
+      # line were never configured.
+      NEXT_PUBLIC_POLAR_PORTAL_URL: ${{ vars.NEXT_PUBLIC_POLAR_PORTAL_URL }}
+      NEXT_PUBLIC_SUPPORT_EMAIL: ${{ vars.NEXT_PUBLIC_SUPPORT_EMAIL }}
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4

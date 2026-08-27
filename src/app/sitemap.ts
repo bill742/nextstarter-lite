@@ -1,5 +1,8 @@
 import { MetadataRoute } from "next";
 
+import { isUpsellEnabled } from "@/lib/upsell";
+import { siteUrl } from "@/lib/utils";
+
 export const dynamic = "force-static";
 
 /**
@@ -9,8 +12,21 @@ export const dynamic = "force-static";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     {
+      changeFrequency: "weekly",
       lastModified: new Date(),
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/`,
+      priority: 1,
+      url: `${siteUrl}/`,
     },
+    // Listing /pro while it 404s would be a crawl error, so it tracks the gate.
+    ...(isUpsellEnabled
+      ? [
+          {
+            changeFrequency: "monthly" as const,
+            lastModified: new Date(),
+            priority: 0.9,
+            url: `${siteUrl}/pro`,
+          },
+        ]
+      : []),
   ];
 }

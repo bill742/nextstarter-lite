@@ -2,7 +2,25 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+/**
+ * The upsell surface is optional (see src/lib/upsell.ts). With no
+ * NEXT_PUBLIC_PRO_URL the routes 404 by design, so these specs skip rather
+ * than fail — which is the state of a fork, or of any project scaffolded from
+ * this starter.
+ */
+const upsellEnabled = Boolean(process.env.NEXT_PUBLIC_PRO_URL);
+
+/**
+ * The portal link and the support line are separate opt-ins from the checkout
+ * link, so they need their own guards: selling something does not mean a
+ * portal or a support address has been configured, and the page leaves each
+ * one out when its variable is unset.
+ */
+const portalConfigured = Boolean(process.env.NEXT_PUBLIC_POLAR_PORTAL_URL);
+const supportConfigured = Boolean(process.env.NEXT_PUBLIC_SUPPORT_EMAIL);
+
 test.describe("Thanks page", () => {
+  test.skip(!upsellEnabled, "NEXT_PUBLIC_PRO_URL is not set");
   test("Verify the confirmation content and next steps are shown", async ({
     page,
   }) => {
@@ -15,12 +33,20 @@ test.describe("Thanks page", () => {
     ).toBeVisible();
 
     const steps = page.getByRole("listitem").filter({
-      has: page.getByRole("heading", { level: 3 }),
+      has: page.getByRole("heading", { level: 2 }),
     });
     await expect(steps).toHaveCount(4);
     await expect(
       page.getByRole("heading", { name: "Claim your repository access" })
     ).toBeVisible();
+  });
+
+  test("Verify the customer portal link opens Polar in a new tab", async ({
+    page,
+  }) => {
+    test.skip(!portalConfigured, "NEXT_PUBLIC_POLAR_PORTAL_URL is not set");
+
+    await page.goto("/thanks");
 
     const portalLink = page.getByRole("link", {
       name: "Open your customer portal",
@@ -28,6 +54,12 @@ test.describe("Thanks page", () => {
     await expect(portalLink).toHaveAttribute("href", /polar\.sh/);
     await expect(portalLink).toHaveAttribute("target", "_blank");
     await expect(portalLink).toHaveAttribute("rel", /noopener/);
+  });
+
+  test("Verify the support line is a mailto link", async ({ page }) => {
+    test.skip(!supportConfigured, "NEXT_PUBLIC_SUPPORT_EMAIL is not set");
+
+    await page.goto("/thanks");
 
     await expect(page.getByRole("link", { name: /^Email / })).toHaveAttribute(
       "href",
@@ -55,6 +87,7 @@ test.describe("Thanks page", () => {
 });
 
 test.describe("Thanks page does not have accessiblity issues", () => {
+  test.skip(!upsellEnabled, "NEXT_PUBLIC_PRO_URL is not set");
   test("Should not have any automatically detectable accessibility issues", async ({
     page,
   }) => {

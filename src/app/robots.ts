@@ -1,5 +1,7 @@
 import { MetadataRoute } from "next";
 
+import { siteUrl } from "@/lib/utils";
+
 export const dynamic = "force-static";
 
 /**
@@ -13,6 +15,6 @@ export default function robots(): MetadataRoute.Robots {
       disallow: [],
       userAgent: "*",
     },
-    sitemap: `${process.env.NEXT_PUBLIC_SITE_URL}/sitemap.xml`,
+    sitemap: `${siteUrl}/sitemap.xml`,
   };
 }
