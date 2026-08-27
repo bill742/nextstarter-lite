@@ -6,6 +6,7 @@ const rows: { free: boolean; label: string }[] = [
   { free: true, label: "Lighthouse 100/100/100/100 on desktop" },
   { free: true, label: "Playwright E2E, ESLint, Prettier & GitHub Actions CI" },
   { free: true, label: "SEO essentials - robots.txt, sitemap.xml, custom 404" },
+  { free: true, label: "Cookieless PostHog analytics - no cookie banner" },
   { free: false, label: "Authentication with Clerk" },
   { free: false, label: "Database with Prisma + PostgreSQL" },
   { free: false, label: "Stripe subscriptions & customer portal" },
@@ -17,7 +18,7 @@ const rows: { free: boolean; label: string }[] = [
     label: "Internationalization - English, Spanish, Arabic (RTL)",
   },
   { free: false, label: "Security headers, CSP & API rate limiting" },
-  { free: false, label: "PostHog analytics & Sentry error tracking" },
+  { free: false, label: "Sentry error tracking" },
 ];
 
 /**

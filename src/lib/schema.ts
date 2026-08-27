@@ -70,6 +70,8 @@ export const softwareSchema = {
     "ESLint and Prettier configuration",
     "GitHub Actions CI workflow",
     "Custom 404 page, robots.txt, and sitemap.xml",
+    "Cookieless PostHog analytics without a consent banner",
+    "UK GDPR and PECR privacy notice",
     "VS Code integration and extensions",
   ],
   installUrl: NPM_URL,

@@ -132,8 +132,8 @@ test.describe("Home page section item counts", () => {
     await expect(page.locator("section#stack ul li")).toHaveCount(6);
   });
 
-  test("Features section displays 11 features", async ({ page }) => {
-    await expect(page.locator("section#features ul li")).toHaveCount(11);
+  test("Features section displays 12 features", async ({ page }) => {
+    await expect(page.locator("section#features ul li")).toHaveCount(12);
   });
 
   test("Getting Started section displays 4 steps", async ({ page }) => {
