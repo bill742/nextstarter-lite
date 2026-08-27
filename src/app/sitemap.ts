@@ -17,6 +17,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
       url: `${siteUrl}/`,
     },
+    {
+      changeFrequency: "yearly",
+      lastModified: new Date(),
+      priority: 0.3,
+      url: `${siteUrl}/privacy`,
+    },
     // Listing /pro while it 404s would be a crawl error, so it tracks the gate.
     ...(isUpsellEnabled
       ? [
