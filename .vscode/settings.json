@@ -7,8 +7,10 @@
     "*.css": "tailwindcss"
   },
   "cSpell.words": [
+    "cookieless",
     "DISPLAYNAME",
     "JSDOCS",
-    "Nextdotjs"
+    "Nextdotjs",
+    "posthog"
   ]
 }
