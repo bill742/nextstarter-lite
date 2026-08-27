@@ -1,7 +1,5 @@
 import "./globals.css";
 
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
@@ -97,8 +95,6 @@ const RootLayout = ({
           {children}
           <Footer />
         </ThemeProvider>
-        <Analytics />
-        <SpeedInsights />
         {/* JSON-LD — see lib/schema.ts */}
         <script
           type="application/ld+json"

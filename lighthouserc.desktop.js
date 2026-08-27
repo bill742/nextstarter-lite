@@ -9,15 +9,16 @@
  * ESLint config forbids `require()`, and duplicating four assertions is a
  * smaller cost than an ignore rule. Keep the two files in step.
  *
- * Best practices is capped at 0.95 for the same reason as in lighthouserc.js:
- * the Vercel analytics scripts 404 in a locally built app and cost 4 points.
+ * Best practices is held at a flat 100 for the same reason as in
+ * lighthouserc.js: the Vercel analytics scripts that used to 404 in a local
+ * build are gone, and PostHog stays uninitialized without a project key.
  */
 module.exports = {
   ci: {
     assert: {
       assertions: {
         "categories:accessibility": ["error", { minScore: 1 }],
-        "categories:best-practices": ["error", { minScore: 0.95 }],
+        "categories:best-practices": ["error", { minScore: 1 }],
         // Measured at 100 locally on desktop.
         "categories:performance": ["error", { minScore: 0.95 }],
         "categories:seo": ["error", { minScore: 1 }],

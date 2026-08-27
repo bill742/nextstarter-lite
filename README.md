@@ -23,6 +23,7 @@ A modern Next.js boilerplate to ship production-ready projects fast — with Typ
 | Components | [ShadCN/UI](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/)                     |
 | Icons      | [Lucide React](https://lucide.dev/) + [React Icons](https://react-icons.github.io/react-icons/) |
 | Theming    | [next-themes](https://github.com/pacocoursey/next-themes)                                       |
+| Analytics  | [PostHog](https://posthog.com/) (cookieless, optional)                                          |
 | Testing    | [Playwright](https://playwright.dev/) + [Axe-core](https://github.com/dequelabs/axe-core)       |
 | Runtime    | Node.js 22                                                                                      |
 
@@ -62,6 +63,21 @@ A modern Next.js boilerplate to ship production-ready projects fast — with Typ
 - Open Graph and Twitter card metadata support
 - Canonical URL configuration
 
+### Analytics & Privacy
+
+- **PostHog analytics**, configured cookieless — no cookies, no local storage,
+  and therefore no consent banner. Visitors are counted with a server-side
+  privacy-preserving hash instead of an identifier that follows them around
+- **Core Web Vitals** captured alongside pageviews
+- Opt-in: with no `NEXT_PUBLIC_POSTHOG_KEY` set, PostHog never initializes and
+  the app makes no third-party requests at all
+- Autocapture and session recording are **off** by default under data
+  minimisation — turn them on deliberately, not by inheriting a default
+- **A `/privacy` page** written to the UK GDPR and PECR, linked from the footer
+  on every page. It reads the same config the SDK does, so it describes what
+  the site actually does rather than drifting away from it
+- Self-hosted fonts via `next/font` — no visitor IP is ever sent to Google
+
 ### Testing & CI/CD
 
 - **Playwright** end-to-end tests across Chromium, Firefox, and WebKit
@@ -100,7 +116,7 @@ foundation.
 - 📝 MDX blog and a validated contact form
 - 🌍 Internationalization — English, Spanish, and Arabic (RTL)
 - 🛡️ Security headers, CSP, and API rate limiting
-- 🚀 Waitlist mode, PostHog analytics, and Sentry error tracking
+- 🚀 Waitlist mode and Sentry error tracking
 - 📚 Comprehensive documentation
 
 **$199 one-time** — lifetime access and updates via a private GitHub repo (just

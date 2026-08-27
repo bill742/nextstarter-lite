@@ -51,12 +51,12 @@ export const softwareSchema = {
     "highContrastDisplay",
     "displayTransformability",
   ],
-  accessibilityStandard: "WCAG 2.1 AA",
+  accessibilitySummary:
+    "WCAG 2.1 AA conformant, verified with Axe-core in both light and dark modes.",
   alternateName: "NextStarter Next.js Boilerplate",
   applicationCategory: "DeveloperApplication",
   applicationSubCategory: "Web Application Framework",
   author: { "@id": `${SITE_URL}/#organization` },
-  codeRepository: GITHUB_URL,
   description:
     "A free, accessible Next.js boilerplate with TypeScript, Tailwind CSS, shadcn/ui, and Playwright. WCAG 2.1 AA verified, with ESLint, Prettier, theming, and GitHub Actions CI preconfigured.",
   downloadUrl: NPM_URL,
@@ -70,10 +70,30 @@ export const softwareSchema = {
     "ESLint and Prettier configuration",
     "GitHub Actions CI workflow",
     "Custom 404 page, robots.txt, and sitemap.xml",
+    "Cookieless PostHog analytics without a consent banner",
+    "UK GDPR and PECR privacy notice",
     "VS Code integration and extensions",
   ],
   installUrl: NPM_URL,
   isAccessibleForFree: true,
+  /*
+   * `codeRepository`, `programmingLanguage`, and `runtimePlatform` are
+   * SoftwareSourceCode properties — schema.org does not define them on
+   * SoftwareApplication, and validator.schema.org rejects them there. They are
+   * real information worth publishing, so they move onto a SoftwareSourceCode
+   * node rather than being deleted: the application is derived from the source
+   * in the repository, which is what `isBasedOn` says.
+   */
+  isBasedOn: {
+    "@id": `${SITE_URL}/#source`,
+    "@type": "SoftwareSourceCode",
+    author: { "@id": `${SITE_URL}/#organization` },
+    codeRepository: GITHUB_URL,
+    license: "https://opensource.org/licenses/MIT",
+    name: `${SITE_NAME} source code`,
+    programmingLanguage: ["TypeScript", "JavaScript"],
+    runtimePlatform: "Node.js 22",
+  },
   license: "https://opensource.org/licenses/MIT",
   name: SITE_NAME,
   offers: [
@@ -104,11 +124,7 @@ export const softwareSchema = {
         ]
       : []),
   ],
-
   operatingSystem: "Any",
-
-  programmingLanguage: ["TypeScript", "JavaScript"],
-
   publisher: { "@id": `${SITE_URL}/#organization` },
   // Matches .node-version and the README. Next.js 16 dropped Node 18 (its hard
   // floor is 20.9), so this is a factual claim search engines read — keep it in

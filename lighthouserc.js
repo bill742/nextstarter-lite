@@ -10,19 +10,20 @@
  * pinning it to 100 would produce a badge that fails at random and gets
  * ignored.
  *
- * Best practices is capped below 100 for a specific, known reason: CI audits a
- * locally built app, where `@vercel/analytics` and `@vercel/speed-insights`
- * request /_vercel/insights/script.js and /_vercel/speed-insights/script.js.
- * Those paths only exist on a Vercel deployment, so locally they 404, log a
- * console error, and cost 4 points. Production scores 100. Raise this to 1 if
- * those scripts ever stop being injected in a local build.
+ * Best practices is held at a flat 100. It was previously capped at 0.95
+ * because `@vercel/analytics` and `@vercel/speed-insights` requested
+ * /_vercel/* script paths that only exist on a Vercel deployment, so a local
+ * build 404'd and lost 4 points. Analytics is now PostHog, initialized from
+ * src/instrumentation-client.ts and gated on NEXT_PUBLIC_POSTHOG_KEY — unset
+ * in CI, so nothing third-party loads during the audit and the deduction is
+ * gone.
  */
 module.exports = {
   ci: {
     assert: {
       assertions: {
         "categories:accessibility": ["error", { minScore: 1 }],
-        "categories:best-practices": ["error", { minScore: 0.95 }],
+        "categories:best-practices": ["error", { minScore: 1 }],
         // Measured at 92 locally; the floor leaves room for runner noise.
         "categories:performance": ["error", { minScore: 0.85 }],
         "categories:seo": ["error", { minScore: 1 }],

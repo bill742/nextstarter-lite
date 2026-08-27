@@ -77,11 +77,11 @@ const integrations: Integration[] = [
   },
   {
     body: [
-      "Analytics is PostHog, configured cookieless — you get product analytics without a consent banner as the price of entry. Error tracking is Sentry, wired for both server and client so a production exception arrives with a stack trace instead of a support ticket that says “it broke.”",
-      "There's also a waitlist mode for the pre-launch period: flip it on and the app collects email addresses behind a landing page, then flip it off on launch day. Both integrations are env-gated, so a repository with no keys sends nothing anywhere.",
+      "Error tracking is Sentry, wired for both server and client so a production exception arrives with a stack trace instead of a support ticket that says “it broke.” There's also a waitlist mode for the pre-launch period: flip it on and the app collects email addresses behind a landing page, then flip it off on launch day.",
+      "Analytics is the same cookieless PostHog setup the free starter already ships — product analytics without a consent banner as the price of entry — carried across unchanged rather than paywalled. Every integration here is env-gated, so a repository with no keys sends nothing anywhere.",
     ],
     id: "analytics",
-    title: "Analytics, error tracking, and waitlist mode",
+    title: "Error tracking, waitlist mode, and analytics",
   },
 ];
 

@@ -20,14 +20,15 @@ const Features = () => {
             <FeatureItem content="ShadCN/UI for theming and component library" />
             <FeatureItem content="Built-in light and dark themes" />
             <FeatureItem content="End-to-end testing with Playwright" />
-            <FeatureItem content="ESLint config and rules" />
-            <FeatureItem content="Prettier configuration setup for Tailwind" />
+            <FeatureItem content="ESLint rules and Prettier with Tailwind class sorting" />
             <FeatureItem
               content="Icons from "
               link="https://react-icons.github.io/react-icons/"
               linkText="React Icons"
             />
             <FeatureItem content="Custom 404 page, robots.txt, and sitemap.xml" />
+            <FeatureItem content="Cookieless PostHog analytics, no consent banner needed" />
+            <FeatureItem content="Privacy page written to UK GDPR and PECR" />
             <FeatureItem content="GitHub Actions CI workflow" />
           </ul>
         </div>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { SiGithub } from "react-icons/si";
 
 import QuickLinks from "./quick-links";
@@ -98,7 +99,18 @@ const Footer = () => {
               © {currentYear} {process.env.NEXT_PUBLIC_SITE_NAME}. All rights
               reserved.
             </p>
-            <div className="flex gap-6">
+            <div className="flex items-center gap-6">
+              {/*
+                Article 13 of the UK GDPR wants the privacy notice reachable
+                from wherever data is collected, which on this site is every
+                page — so it lives in the footer rather than the header nav.
+              */}
+              <Link
+                href="/privacy"
+                className="transition-colors hover:text-orange-700 dark:hover:text-orange-400"
+              >
+                Privacy
+              </Link>
               <a
                 href="https://github.com/bill742/nextstarter-lite"
                 target="_blank"
