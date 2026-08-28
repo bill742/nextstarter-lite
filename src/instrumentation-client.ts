@@ -10,7 +10,8 @@ import { isAnalyticsEnabled, posthogHost, posthogKey } from "@/lib/analytics";
  * the layout.
  *
  * Like the upsell in `lib/upsell.ts`, this is opt-in: with no
- * `NEXT_PUBLIC_POSTHOG_KEY` set, PostHog never initializes and the app makes no
+ * `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` set, PostHog never initializes and the app
+ * makes no
  * third-party requests at all. A project scaffolded from this starter therefore
  * does not quietly ship traffic to someone else's analytics account. The flag
  * and the host live in `lib/analytics.ts` so that `/privacy` describes this

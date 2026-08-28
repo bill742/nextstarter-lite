@@ -7,7 +7,7 @@ import { expect, test } from "@playwright/test";
  * has a privacy position, even when that position is "this deployment collects
  * nothing". So these specs never skip.
  */
-const analyticsEnabled = Boolean(process.env.NEXT_PUBLIC_POSTHOG_KEY);
+const analyticsEnabled = Boolean(process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN);
 
 test.describe("Privacy page", () => {
   test("Verify the notice renders with its heading and last-updated date", async ({

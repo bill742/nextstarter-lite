@@ -9,7 +9,7 @@
  */
 
 /** PostHog project token. Empty when analytics is switched off. */
-export const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY || "";
+export const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN || "";
 
 /**
  * Whether this deployment sends anything to PostHog.
