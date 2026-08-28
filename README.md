@@ -69,6 +69,9 @@ A modern Next.js boilerplate to ship production-ready projects fast — with Typ
   and therefore no consent banner. Visitors are counted with a server-side
   privacy-preserving hash instead of an identifier that follows them around
 - **Core Web Vitals** captured alongside pageviews
+- **Same-origin `/ingest` proxy** so ad blockers, Brave shields, and blocking
+  DNS resolvers have no PostHog hostname to match — analytics traffic leaves
+  the browser addressed to your own domain
 - Opt-in: with no `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` set, PostHog never
   initializes and
   the app makes no third-party requests at all

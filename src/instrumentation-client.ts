@@ -1,6 +1,11 @@
 import posthog from "posthog-js";
 
-import { isAnalyticsEnabled, posthogHost, posthogKey } from "@/lib/analytics";
+import {
+  isAnalyticsEnabled,
+  posthogApiHost,
+  posthogKey,
+  posthogUiHost,
+} from "@/lib/analytics";
 
 /**
  * Client-side analytics bootstrap.
@@ -24,9 +29,11 @@ import { isAnalyticsEnabled, posthogHost, posthogKey } from "@/lib/analytics";
  */
 if (isAnalyticsEnabled) {
   posthog.init(posthogKey, {
-    // EU Cloud. UK adequacy regulations cover UK→EEA transfers, which keeps
-    // this out of the international-transfer paperwork that a US host needs.
-    api_host: posthogHost,
+    // A same-origin path, rewritten to PostHog by next.config.ts, so ad
+    // blockers have no PostHog hostname to match. The upstream is still EU
+    // Cloud: UK adequacy regulations cover UK→EEA transfers, which keeps this
+    // out of the international-transfer paperwork a US host would need.
+    api_host: posthogApiHost,
     // Off by default under data minimisation: autocapture records clicks and
     // the text of the elements clicked, which is far more than a marketing
     // site needs to answer "which pages get read". Flip to `true` if you want
@@ -62,5 +69,8 @@ if (isAnalyticsEnabled) {
     // privacy commitment than page counts and is not something a starter
     // should switch on for you.
     disable_session_recording: true,
+    // The proxy fronts ingestion and assets only, so the dashboard address
+    // has to be given explicitly or the toolbar cannot find it.
+    ui_host: posthogUiHost,
   });
 }

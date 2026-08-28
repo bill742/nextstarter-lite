@@ -3,8 +3,8 @@ import Link from "next/link";
 
 import {
   isAnalyticsEnabled,
-  posthogHost,
   posthogRegion,
+  posthogUpstreamHost,
 } from "@/lib/analytics";
 import { privacyContactEmail } from "@/lib/privacy";
 import { isUpsellEnabled } from "@/lib/upsell";
@@ -152,7 +152,10 @@ const Privacy = () => {
                   ) : (
                     <>
                       Data is sent to{" "}
-                      <span className="font-mono text-sm">{posthogHost}</span>.
+                      <span className="font-mono text-sm">
+                        {posthogUpstreamHost}
+                      </span>
+                      .
                     </>
                   )}
                 </p>
