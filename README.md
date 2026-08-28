@@ -69,7 +69,8 @@ A modern Next.js boilerplate to ship production-ready projects fast — with Typ
   and therefore no consent banner. Visitors are counted with a server-side
   privacy-preserving hash instead of an identifier that follows them around
 - **Core Web Vitals** captured alongside pageviews
-- Opt-in: with no `NEXT_PUBLIC_POSTHOG_KEY` set, PostHog never initializes and
+- Opt-in: with no `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` set, PostHog never
+  initializes and
   the app makes no third-party requests at all
 - Autocapture and session recording are **off** by default under data
   minimisation — turn them on deliberately, not by inheriting a default

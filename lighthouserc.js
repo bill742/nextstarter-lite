@@ -14,7 +14,8 @@
  * because `@vercel/analytics` and `@vercel/speed-insights` requested
  * /_vercel/* script paths that only exist on a Vercel deployment, so a local
  * build 404'd and lost 4 points. Analytics is now PostHog, initialized from
- * src/instrumentation-client.ts and gated on NEXT_PUBLIC_POSTHOG_KEY — unset
+ * src/instrumentation-client.ts and gated on NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN —
+ * unset
  * in CI, so nothing third-party loads during the audit and the deduction is
  * gone.
  */
