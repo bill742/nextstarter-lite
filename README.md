@@ -70,14 +70,17 @@ A modern Next.js boilerplate to ship production-ready projects fast — with Typ
   privacy-preserving hash instead of an identifier that follows them around
 - **Core Web Vitals** captured alongside pageviews
 - Opt-in: with no `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` set, PostHog never
-  initializes and
-  the app makes no third-party requests at all
+  initializes and the app makes no third-party requests at all
 - Autocapture and session recording are **off** by default under data
   minimisation — turn them on deliberately, not by inheriting a default
 - **A `/privacy` page** written to the UK GDPR and PECR, linked from the footer
   on every page. It reads the same config the SDK does, so it describes what
   the site actually does rather than drifting away from it
 - Self-hosted fonts via `next/font` — no visitor IP is ever sent to Google
+- The cost of going cookieless, stated plainly: PostHog strips the IP before
+  enrichment, so there is **no geography and no bot filtering** — the world map
+  reads zero for every country by design. Not having a consent banner is what
+  you are buying with that
 
 ### Testing & CI/CD
 
