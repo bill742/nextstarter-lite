@@ -119,7 +119,12 @@ const Integrations = () => {
             {integrations.map((integration) => (
               <section
                 key={integration.id}
-                className="space-y-3 rounded-lg border border-stone-200 bg-white p-6 md:p-8 dark:border-stone-800 dark:bg-stone-900/50"
+                // scroll-mt-36 clears both fixed bars: the 72px header and the
+                // sticky section nav that ends at 125px. The outer sections get
+                // away with scroll-mt-20 because their py-24 pushes the heading
+                // clear; these cards are only p-6, so the heading lands right
+                // at the section top and needs the real offset.
+                className="scroll-mt-36 space-y-3 rounded-lg border border-stone-200 bg-white p-6 md:p-8 dark:border-stone-800 dark:bg-stone-900/50"
                 id={integration.id}
                 aria-labelledby={`${integration.id}-heading`}
               >

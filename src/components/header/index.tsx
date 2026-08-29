@@ -23,6 +23,12 @@ const Header = () => {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+
+    // Sync once on mount. A deep link like /pro#authentication loads already
+    // scrolled down, and no scroll event ever fires for it — without this the
+    // header stays transparent over page content until the reader nudges it.
+    handleScroll();
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
