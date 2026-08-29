@@ -53,9 +53,14 @@ if (isAnalyticsEnabled) {
      * accounts, so there is nothing to identify.
      *
      * UK GDPR still applies to the IP address PostHog processes to derive the
-     * hash and coarse geography. That is covered by legitimate interest and
-     * disclosed at /privacy — a lawful basis and a notice are required whether
-     * or not a banner is.
+     * hash. That is covered by legitimate interest and disclosed at /privacy —
+     * a lawful basis and a notice are required whether or not a banner is.
+     *
+     * Note what this mode also costs, because it is not obvious and looks like
+     * a fault: PostHog strips the IP after hashing and before enrichment runs,
+     * so GeoIP and bot detection never happen. The Web Analytics world map
+     * shows zero for every country, and bot traffic is not filtered out. That
+     * is documented PostHog behaviour, not a misconfiguration.
      */
     cookieless_mode: "always",
     // Session replay records what visitors do on the page. It is a much larger

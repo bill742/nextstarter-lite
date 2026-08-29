@@ -127,11 +127,13 @@ const Privacy = () => {
                 </p>
                 <p>
                   The UK GDPR still applies, because your IP address is
-                  processed to produce that hash and to derive an approximate
-                  country. Your IP address is not stored. The lawful basis is
-                  legitimate interests: understanding which pages people
-                  actually read, using the least identifying method available.
-                  Click tracking and session recording are both switched off.
+                  processed to produce that hash. It is discarded immediately
+                  afterwards, never stored, and no location is derived from it
+                  &mdash; this site keeps no record of which country you read it
+                  from. The lawful basis is legitimate interests: understanding
+                  which pages people actually read, using the least identifying
+                  method available. Click tracking and session recording are
+                  both switched off.
                 </p>
                 <p>
                   PostHog acts as our processor under Article 28.{" "}
