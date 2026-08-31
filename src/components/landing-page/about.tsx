@@ -1,9 +1,11 @@
-import AboutCtas from "./about-ctas";
-
 /**
  * About section component
- * Describes the purpose and features of the Next.js boilerplate project
- * @returns About section with project description and call-to-action
+ *
+ * Describes the purpose and features of the Next.js boilerplate project. The
+ * hero above it owns the page's `h1` and its calls to action, so this section
+ * is prose only and heads at `h2` — one `h1` per page, and one place to click.
+ *
+ * @returns About section with project description
  */
 const About = () => {
   return (
@@ -13,10 +15,10 @@ const About = () => {
         id="about"
       >
         <div className="space-y-6">
-          <h1 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">
+          <h2 className="font-serif text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-50">
             About {process.env.NEXT_PUBLIC_SITE_NAME} - the accessible Next.js
             boilerplate
-          </h1>
+          </h2>
           <p className="mx-auto max-w-2xl text-lg leading-relaxed text-stone-600 md:text-xl dark:text-stone-300">
             {process.env.NEXT_PUBLIC_SITE_NAME} is a free, open source{" "}
             <strong>Next.js</strong> boilerplate that hands you a project
@@ -31,10 +33,6 @@ const About = () => {
             Axe-core, perfect Lighthouse scores enforced in CI, and Playwright
             end-to-end tests running against Chromium, Firefox, and WebKit.
           </p>
-
-          <div className="pt-2">
-            <AboutCtas />
-          </div>
         </div>
       </section>
       {/* Divider */}
