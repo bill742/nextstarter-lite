@@ -1,0 +1,50 @@
+name: Image Optimizer Probe
+
+# TEMPORARY. Delete this file once the /_next/image hang is understood.
+#
+# `Verify the product screenshots load and are captioned` fails on chromium and
+# firefox because /_next/image never answers for whichever screenshot the test
+# asks for first, while the other two are served in milliseconds. It does not
+# reproduce on macOS. This probe talks to the optimizer directly, inside the
+# same container CI uses, to find out whether the hang follows the *file* or
+# the *position in the request order*.
+
+on:
+  push:
+    branches: [ diagnose-image-optimizer-hang ]
+  workflow_dispatch:
+
+jobs:
+  probe:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
+      options: --user 1001
+    env:
+      NEXT_PUBLIC_SITE_URL: https://www.nextstarter.app
+      NEXT_PUBLIC_SITE_NAME: NextStarter
+      NEXT_PUBLIC_SITE_META_DESCRIPTION: A modern Next.js boilerplate for building production-ready web applications.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Report the environment
+        run: |
+          echo "node        $(node -v)"
+          echo "cpus        $(node -p 'require("os").cpus().length')"
+          echo "totalmem    $(node -p 'Math.round(require("os").totalmem()/1e6)+" MB"')"
+          echo "uid/gid     $(id -u)/$(id -g)  home=$HOME"
+          node -e 'const s=require("sharp");console.log("sharp",s.versions.sharp,"vips",s.versions.vips,"concurrency",s.concurrency())' \
+            || echo "sharp: FAILED TO LOAD"
+
+      - name: Build Next.js app
+        run: npm run build
+
+      - name: Probe the optimizer
+        run: bash .github/scripts/probe-image-optimizer.sh
