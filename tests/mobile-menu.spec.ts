@@ -50,9 +50,14 @@ test.describe("Mobile menu navigation", () => {
       await page.goto("/");
       await openMenu(page);
 
-      // At this width the header's own CTA is visible too; the menu renders
-      // after the header, so the menu's copy is the last one in the DOM.
-      await page.getByRole("button", { name: "Get Started" }).last().click();
+      // Scoped to the header, since the hero's CTA also matches "Get started".
+      // Inside it the header's own CTA is visible at this width too; the menu
+      // renders after it, so the menu's copy is the last one in the DOM.
+      await page
+        .locator("header")
+        .getByRole("button", { name: "Get Started" })
+        .last()
+        .click();
 
       await expect(
         page.getByRole("button", { name: "Close menu" })

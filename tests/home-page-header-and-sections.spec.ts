@@ -14,12 +14,11 @@ test.describe("Home page header and navigation", () => {
 
     // Exactly one h1, and it is page content rather than the logo — the logo
     // repeats on every route, so using it as the h1 gave every page the same
-    // one and wasted the strongest on-page heading signal.
+    // one and wasted the strongest on-page heading signal. It lives in the
+    // hero; the About section below heads at h2.
     const h1 = page.locator("h1");
     await expect(h1).toHaveCount(1);
-    await expect(h1).toHaveText(
-      `About ${process.env.NEXT_PUBLIC_SITE_NAME} - the accessible Next.js boilerplate`
-    );
+    await expect(h1).toHaveText("Ship accessible Next.js apps in minutes");
 
     const nav = page.getByRole("navigation");
     await expect(nav).toBeVisible();
@@ -93,10 +92,14 @@ test.describe("Home page navigation scroll behavior", () => {
     ).toBeInViewport();
   });
 
-  test("Get Started button scrolls the Getting Started section into view", async ({
+  test("Header Get Started button scrolls the Getting Started section into view", async ({
     page,
   }) => {
-    await page.getByRole("button", { name: "Get Started" }).click();
+    // Scoped to the header: the hero's primary CTA also matches "Get started".
+    await page
+      .locator("header")
+      .getByRole("button", { name: "Get Started" })
+      .click();
 
     await expect(page.locator("section#getting-started")).toBeInViewport();
     await expect(
@@ -104,22 +107,27 @@ test.describe("Home page navigation scroll behavior", () => {
     ).toBeInViewport();
   });
 
-  test("About CTA scrolls the Getting Started section into view", async ({
+  test("Hero CTA scrolls the Getting Started section into view", async ({
     page,
   }) => {
-    await page.getByRole("button", { name: "Start a project" }).click();
+    await page.getByRole("button", { name: "Get started free" }).click();
 
     await expect(page.locator("section#getting-started")).toBeInViewport();
   });
 
-  // The Pro teaser is the last section on the page, so this button is the only
-  // way to reach it without scrolling the whole page.
-  test("About Pro CTA scrolls the Pro teaser into view", async ({ page }) => {
+  test("Hero Pro CTA links to the Pro page", async ({ page }) => {
     test.skip(!upsellEnabled, "NEXT_PUBLIC_PRO_URL is not set");
 
-    await page.getByRole("button", { name: "See what Pro adds" }).click();
+    // Scoped to the hero: the footer carries a link with the same label.
+    await page
+      .locator("section#hero")
+      .getByRole("link", { name: "Upgrade to Pro" })
+      .click();
 
-    await expect(page.locator("section#pro")).toBeInViewport();
+    await expect(page).toHaveURL(/\/pro$/);
+    await expect(
+      page.getByRole("heading", { level: 1, name: /NextStarter Pro/ })
+    ).toBeVisible();
   });
 });
 

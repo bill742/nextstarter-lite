@@ -31,7 +31,7 @@ const rows: { free: boolean; label: string }[] = [
  * @returns A centered cell with an accessible included/not-included marker.
  */
 const Mark = ({ included }: { included: boolean }) => (
-  <td className="px-4 py-3 text-center">
+  <td className="px-2 py-3 text-center sm:px-4">
     <span className="sr-only">{included ? "Included" : "Not included"}</span>
     {included ? (
       <span
@@ -80,15 +80,20 @@ const Comparison = () => {
             </p>
           </div>
 
-          {/* `relative` is load-bearing: each cell's "Included" text is
-              `sr-only`, which positions it absolutely. Without a positioned
-              ancestor those spans resolve against the page instead of this
-              scroller, so they escape its clip and sit past the right edge —
-              giving the whole page a horizontal scrollbar under ~425px wide.
-              Positioning the scroller makes it their containing block, and the
-              overflow that belongs to the table stays inside the table. */}
+          {/* The table has no minimum width: it shrinks to fit rather than
+              scrolling sideways, because a table that scrolls gives no hint
+              that it does, and the columns off the right edge are the ones
+              being compared.
+
+              `overflow-x-auto` stays as a backstop for a translation or an
+              edited label that outgrows a narrow screen, and `relative` is
+              load-bearing with it: each cell's "Included" text is `sr-only`,
+              which positions it absolutely. Without a positioned ancestor
+              those spans resolve against the page instead of this element, so
+              they escape its clip and sit past the right edge — giving the
+              whole page a horizontal scrollbar on narrow screens. */}
           <div className="relative overflow-x-auto rounded-2xl border border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-900/50">
-            <table className="w-full min-w-md border-collapse text-left">
+            <table className="w-full border-collapse text-left">
               <caption className="sr-only">
                 A feature comparison of the free NextStarter starter and
                 NextStarter Pro
@@ -97,25 +102,25 @@ const Comparison = () => {
                 <tr className="border-b border-stone-200 dark:border-stone-800">
                   <th
                     scope="col"
-                    className="px-4 py-4 font-serif text-base font-bold text-stone-900 dark:text-stone-50"
+                    className="px-2 py-4 font-serif text-sm font-bold text-stone-900 sm:px-4 sm:text-base dark:text-stone-50"
                   >
                     Feature
                   </th>
                   <th
                     scope="col"
-                    className="px-4 py-4 text-center font-serif text-base font-bold text-stone-900 dark:text-stone-50"
+                    className="px-2 py-4 text-center font-serif text-sm font-bold text-stone-900 sm:px-4 sm:text-base dark:text-stone-50"
                   >
                     Free
-                    <span className="block text-sm font-normal text-stone-500 dark:text-stone-400">
+                    <span className="block text-xs font-normal text-stone-500 sm:text-sm dark:text-stone-400">
                       $0
                     </span>
                   </th>
                   <th
                     scope="col"
-                    className="px-4 py-4 text-center font-serif text-base font-bold text-stone-900 dark:text-stone-50"
+                    className="px-2 py-4 text-center font-serif text-sm font-bold text-stone-900 sm:px-4 sm:text-base dark:text-stone-50"
                   >
                     Pro
-                    <span className="block text-sm font-normal text-stone-500 dark:text-stone-400">
+                    <span className="block text-xs font-normal text-stone-500 sm:text-sm dark:text-stone-400">
                       $199 once
                     </span>
                   </th>
@@ -129,7 +134,7 @@ const Comparison = () => {
                   >
                     <th
                       scope="row"
-                      className="px-4 py-3 font-normal text-stone-700 dark:text-stone-300"
+                      className="px-2 py-3 text-sm font-normal text-stone-700 sm:px-4 sm:text-base dark:text-stone-300"
                     >
                       {row.label}
                     </th>

@@ -70,7 +70,7 @@ test.describe("Section navigation from a non-home route", () => {
     await page.goto(SOME_OTHER_ROUTE);
     await page.goto("/");
 
-    await expect(page.locator("section#about")).toBeInViewport();
+    await expect(page.locator("section#hero")).toBeInViewport();
     await expect(page.locator("section#features")).not.toBeInViewport();
   });
 });

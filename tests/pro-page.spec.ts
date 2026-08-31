@@ -53,6 +53,53 @@ test.describe("Pro page", () => {
     await expect(buyLinks.first()).toHaveAttribute("rel", /noopener/);
   });
 
+  // A screenshot with a wrong path still renders its alt text and still
+  // passes the axe scan, so nothing else on this page would notice. These
+  // assert the bytes actually arrived.
+  test("Verify the product screenshots load and are captioned", async ({
+    page,
+  }) => {
+    await page.goto("/pro");
+
+    const screenshots = [
+      {
+        alt: /Projects page of the Pro dashboard/,
+        section: "#database",
+      },
+      {
+        alt: /Getting started page inside the Pro dashboard/,
+        section: "#dashboard",
+      },
+      {
+        alt: /header with the Arabic locale selected/,
+        section: "#internationalization",
+      },
+    ];
+
+    for (const { alt, section } of screenshots) {
+      const figure = page.locator(section).locator("figure");
+      await expect(figure).toHaveCount(1);
+
+      const image = figure.getByRole("img", { name: alt });
+      await expect(image).toBeVisible();
+
+      // These sit well below the fold and next/image lazy-loads by default,
+      // so nothing is fetched until a reader gets here.
+      await figure.scrollIntoViewIfNeeded();
+
+      // naturalWidth stays 0 when the request 404s.
+      await expect
+        .poll(() => image.evaluate((img: HTMLImageElement) => img.naturalWidth))
+        .toBeGreaterThan(0);
+
+      // The caption is a separate line of copy, not a repeat of the alt text:
+      // a screen reader announces both.
+      const caption = figure.locator("figcaption");
+      await expect(caption).toBeVisible();
+      await expect(caption).not.toBeEmpty();
+    }
+  });
+
   test("Verify the FAQ expands and its answers ship in the DOM", async ({
     page,
   }) => {
@@ -99,13 +146,19 @@ test.describe("Pro page", () => {
   test("Verify the page does not scroll sideways on a narrow screen", async ({
     page,
   }) => {
-    await page.setViewportSize({ height: 800, width: 360 });
+    // Narrower than the min-width the table used to carry, which is what
+    // forced it to scroll sideways.
+    await page.setViewportSize({ height: 800, width: 320 });
     await page.goto("/pro");
 
-    // The comparison table is wider than a phone and scrolls inside its own
-    // container. Anything that escapes that container — an sr-only span is
-    // positioned absolutely, so it will, unless the scroller is its
-    // containing block — turns into a horizontal scrollbar on the whole page.
+    // Neither the page nor the table scrolls sideways. The table shrinks to
+    // fit instead: a scrolling table gives no hint that it scrolls, and the
+    // columns parked off the right edge are the ones being compared.
+    //
+    // The page-level half of this is not automatic — an sr-only span is
+    // positioned absolutely, so it escapes the table's container unless that
+    // container is its containing block, and turns into a horizontal
+    // scrollbar on the whole page.
     const layout = await page.evaluate(() => {
       const scroller = document.querySelector("#compare .overflow-x-auto");
 
@@ -120,7 +173,18 @@ test.describe("Pro page", () => {
     });
 
     expect(layout.pageScrolls).toBe(false);
-    expect(layout.tableScrolls).toBe(true);
+    expect(layout.tableScrolls).toBe(false);
+
+    // Both comparison columns have to be on screen for the table to say
+    // anything at all. Measured horizontally rather than with toBeInViewport,
+    // which also asks about vertical position — irrelevant here, and true only
+    // for whichever part of a long table happens to be scrolled to.
+    const proColumn = await page
+      .getByRole("columnheader", { name: /Pro/ })
+      .boundingBox();
+
+    expect(proColumn).not.toBeNull();
+    expect(proColumn!.x + proColumn!.width).toBeLessThanOrEqual(320);
   });
 
   test("Verify metadata and structured data", async ({ page }) => {
