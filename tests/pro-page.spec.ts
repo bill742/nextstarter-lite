@@ -146,13 +146,19 @@ test.describe("Pro page", () => {
   test("Verify the page does not scroll sideways on a narrow screen", async ({
     page,
   }) => {
-    await page.setViewportSize({ height: 800, width: 360 });
+    // Narrower than the min-width the table used to carry, which is what
+    // forced it to scroll sideways.
+    await page.setViewportSize({ height: 800, width: 320 });
     await page.goto("/pro");
 
-    // The comparison table is wider than a phone and scrolls inside its own
-    // container. Anything that escapes that container — an sr-only span is
-    // positioned absolutely, so it will, unless the scroller is its
-    // containing block — turns into a horizontal scrollbar on the whole page.
+    // Neither the page nor the table scrolls sideways. The table shrinks to
+    // fit instead: a scrolling table gives no hint that it scrolls, and the
+    // columns parked off the right edge are the ones being compared.
+    //
+    // The page-level half of this is not automatic — an sr-only span is
+    // positioned absolutely, so it escapes the table's container unless that
+    // container is its containing block, and turns into a horizontal
+    // scrollbar on the whole page.
     const layout = await page.evaluate(() => {
       const scroller = document.querySelector("#compare .overflow-x-auto");
 
@@ -167,7 +173,18 @@ test.describe("Pro page", () => {
     });
 
     expect(layout.pageScrolls).toBe(false);
-    expect(layout.tableScrolls).toBe(true);
+    expect(layout.tableScrolls).toBe(false);
+
+    // Both comparison columns have to be on screen for the table to say
+    // anything at all. Measured horizontally rather than with toBeInViewport,
+    // which also asks about vertical position — irrelevant here, and true only
+    // for whichever part of a long table happens to be scrolled to.
+    const proColumn = await page
+      .getByRole("columnheader", { name: /Pro/ })
+      .boundingBox();
+
+    expect(proColumn).not.toBeNull();
+    expect(proColumn!.x + proColumn!.width).toBeLessThanOrEqual(320);
   });
 
   test("Verify metadata and structured data", async ({ page }) => {
