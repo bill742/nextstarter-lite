@@ -35,7 +35,7 @@ export const faqSections: FaqSection[] = [
       {
         answer:
           "Through GitHub, not a zip. You clone the private repo and pull updates with git. That means you get fixes and new features by running git pull, instead of re-downloading and manually merging a file dump.",
-        id: "delivery",
+        id: "how-is-it-delivered",
         question: "How is it delivered?",
       },
       {
