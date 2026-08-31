@@ -1,3 +1,5 @@
+import Screenshot from "./screenshot";
+
 /**
  * One integration, rendered as its own subsection.
  *
@@ -7,6 +9,18 @@
 type Integration = {
   body: string[];
   id: string;
+  /**
+   * Optional proof for the claim above it. Only the integrations a buyer
+   * cannot take on faith carry one — the ones where "it's wired up" and "it's
+   * installed" look identical in prose.
+   */
+  screenshot?: {
+    alt: string;
+    caption: string;
+    height: number;
+    src: string;
+    width: number;
+  };
   title: string;
 };
 
@@ -25,6 +39,14 @@ const integrations: Integration[] = [
       "That example is the piece most starters skip. It's the difference between “a database is installed” and “here is how this codebase expects you to read and write data safely.”",
     ],
     id: "database",
+    screenshot: {
+      alt: "The Projects page of the Pro dashboard in dark mode, showing a form with Title and Description fields and an Add project button, under the line \u201cA Prisma + PostgreSQL CRUD example. Projects are scoped to your account.\u201d",
+      caption:
+        "The CRUD example in the dashboard. Records are scoped to the signed-in user, so the ownership checks ship as working code rather than a note in the README.",
+      height: 1004,
+      src: "/screenshots/pro-projects-crud.png",
+      width: 2892,
+    },
     title: "Database with Prisma and PostgreSQL",
   },
   {
@@ -49,6 +71,14 @@ const integrations: Integration[] = [
       "On top of that sits an admin panel with metrics and a searchable user table, so you have an operator's view of your own product from day one instead of querying the database by hand when a customer emails you.",
     ],
     id: "dashboard",
+    screenshot: {
+      alt: "The Getting started page inside the Pro dashboard, in dark mode: a sidebar listing Dashboard, Projects, Billing, Getting Started, Profile, Waitlist, and Admin, beside four cards \u2014 Authentication (Clerk), Database (Prisma + PostgreSQL), Email (Resend), and Billing (Stripe) \u2014 each marked Configured with a green check.",
+      caption:
+        "The app shell, showing the onboarding page it ships with: which env-gated integrations are switched on, read from the environment rather than from a checklist you maintain by hand.",
+      height: 1210,
+      src: "/screenshots/pro-dashboard-getting-started.png",
+      width: 2670,
+    },
     title: "Dashboard app shell and admin panel",
   },
   {
@@ -65,6 +95,14 @@ const integrations: Integration[] = [
       "Here the RTL layout is built and tested, routing is locale-aware, and hreflang metadata is emitted for every page so search engines understand which language they're looking at. Adding a fourth language is a message file, not a refactor.",
     ],
     id: "internationalization",
+    screenshot: {
+      alt: "The site header with the Arabic locale selected and the layout mirrored: the NextStarter logo sits at the right edge with the navigation running right to left beside it, while the account avatar, language switcher, and theme toggle move to the left edge.",
+      caption:
+        "The header in Arabic. Logo and navigation move to the right and the controls to the left \u2014 driven by the layout's own direction, not by a stylesheet override.",
+      height: 136,
+      src: "/screenshots/pro-rtl-header.png",
+      width: 2498,
+    },
     title: "Internationalization with RTL support",
   },
   {
@@ -142,6 +180,9 @@ const Integrations = () => {
                     {paragraph}
                   </p>
                 ))}
+                {integration.screenshot && (
+                  <Screenshot {...integration.screenshot} />
+                )}
               </section>
             ))}
           </div>

@@ -53,6 +53,53 @@ test.describe("Pro page", () => {
     await expect(buyLinks.first()).toHaveAttribute("rel", /noopener/);
   });
 
+  // A screenshot with a wrong path still renders its alt text and still
+  // passes the axe scan, so nothing else on this page would notice. These
+  // assert the bytes actually arrived.
+  test("Verify the product screenshots load and are captioned", async ({
+    page,
+  }) => {
+    await page.goto("/pro");
+
+    const screenshots = [
+      {
+        alt: /Projects page of the Pro dashboard/,
+        section: "#database",
+      },
+      {
+        alt: /Getting started page inside the Pro dashboard/,
+        section: "#dashboard",
+      },
+      {
+        alt: /header with the Arabic locale selected/,
+        section: "#internationalization",
+      },
+    ];
+
+    for (const { alt, section } of screenshots) {
+      const figure = page.locator(section).locator("figure");
+      await expect(figure).toHaveCount(1);
+
+      const image = figure.getByRole("img", { name: alt });
+      await expect(image).toBeVisible();
+
+      // These sit well below the fold and next/image lazy-loads by default,
+      // so nothing is fetched until a reader gets here.
+      await figure.scrollIntoViewIfNeeded();
+
+      // naturalWidth stays 0 when the request 404s.
+      await expect
+        .poll(() => image.evaluate((img: HTMLImageElement) => img.naturalWidth))
+        .toBeGreaterThan(0);
+
+      // The caption is a separate line of copy, not a repeat of the alt text:
+      // a screen reader announces both.
+      const caption = figure.locator("figcaption");
+      await expect(caption).toBeVisible();
+      await expect(caption).not.toBeEmpty();
+    }
+  });
+
   test("Verify the FAQ expands and its answers ship in the DOM", async ({
     page,
   }) => {
