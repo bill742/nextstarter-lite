@@ -12,7 +12,7 @@ jobs:
     # are prebaked, so there is no `playwright install --with-deps` apt step to
     # hang on. Pin the tag to the @playwright/test version in package.json.
     container:
-      image: mcr.microsoft.com/playwright:v1.58.2-noble
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
       options: --user 1001
     env:
       NEXT_PUBLIC_SITE_URL: https://www.nextstarter.app
