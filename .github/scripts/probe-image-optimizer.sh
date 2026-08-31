@@ -10,23 +10,49 @@
 
 set -uo pipefail
 
-BASE=http://localhost:3000
+# Set once the first round finds an address that answers. The first attempt at
+# this probe hardcoded http://localhost:3000 and never connected, even though
+# next reported "Ready in 121ms" — so which name resolves to the listening
+# socket is itself something to discover rather than assume.
+BASE=""
 # The Accept header chromium sends. Firefox and chromium both fail; webkit,
 # which runs at deviceScaleFactor 2 and so requests a different width, passes.
 ACCEPT='image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
 LOGDIR="${RUNNER_TEMP:-/tmp}/probe"
 mkdir -p "$LOGDIR"
 
+# Any 2xx-or-not response means something is listening; -f is deliberately not
+# used, since an error page still proves the socket is reachable.
+reachable() {
+  curl -sS -o /dev/null --max-time 5 "$1/pro" 2>/dev/null
+}
+
 start_server() {
   local round=$1
   rm -rf .next/cache/images
   npm run start >"$LOGDIR/server-$round.log" 2>&1 &
   SERVER_PID=$!
-  for _ in $(seq 1 120); do
-    if curl -fsS -o /dev/null --max-time 2 "$BASE/pro" 2>/dev/null; then return 0; fi
+  for _ in $(seq 1 60); do
+    for candidate in http://127.0.0.1:3000 http://localhost:3000 "http://[::1]:3000"; do
+      if reachable "$candidate"; then
+        if [ "$BASE" != "$candidate" ]; then
+          BASE=$candidate
+          echo "  (serving on $BASE)"
+        fi
+        return 0
+      fi
+    done
     sleep 1
   done
-  echo "server never became ready"
+
+  echo "server never became ready on any of 127.0.0.1 / localhost / [::1]"
+  echo "--- listening sockets ---"
+  (ss -ltnp || netstat -ltnp || true) 2>&1 | head -20
+  echo "--- name resolution ---"
+  getent hosts localhost || true
+  echo "--- verbose attempt ---"
+  curl -v --max-time 5 http://localhost:3000/pro 2>&1 | head -20
+  echo "--- server output ---"
   cat "$LOGDIR/server-$round.log"
   return 1
 }
@@ -55,7 +81,12 @@ round() {
   echo
   echo "=============== ROUND $n: $1 ==============="
   shift
-  start_server "$n" || exit 1
+  # A round that cannot start its server should not cost us the later rounds.
+  if ! start_server "$n"; then
+    echo "!! round $n skipped: no reachable server"
+    stop_server
+    return
+  fi
   for spec in "$@"; do
     IFS=: read -r label path width <<<"$spec"
     fetch "$label" "$path" "$width"
