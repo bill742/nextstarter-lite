@@ -56,15 +56,26 @@ start_server() {
   rm -rf .next/cache/images
   npm run start >"$log" 2>&1 &
 
-  for _ in $(seq 1 60); do
+  local status=000
+  for attempt in $(seq 1 60); do
     if grep -q EADDRINUSE "$log" 2>/dev/null; then
       echo "  !! server could not bind port 3000:"
       sed -n '1,12p' "$log"
       return 1
     fi
-    # 200 alone is not enough: the stale server returned 404 pages happily.
+    # 200 alone is not enough: a stale server returned 404 pages happily.
     if curl -sS --max-time 5 "$CURL_BASE/pro" 2>/dev/null | grep -q "$MARKER"; then
       return 0
+    fi
+    status=$(curl -sS -o /dev/null --max-time 5 -w '%{http_code}' "$CURL_BASE/pro" 2>/dev/null)
+    # A served 404 is a build problem, not a slow start. Waiting out the full
+    # minute for it — ten times over — cost an eleven-minute run that said
+    # nothing, so fail fast and name the likely cause.
+    if [ "$status" = "404" ] && [ "$attempt" -ge 5 ]; then
+      echo "  !! /pro returns 404 — the app was built without the upsell surface."
+      echo "     src/lib/upsell.ts 404s /pro when NEXT_PUBLIC_PRO_URL is empty."
+      echo "     NEXT_PUBLIC_PRO_URL is currently: '${NEXT_PUBLIC_PRO_URL:-}'"
+      return 1
     fi
     sleep 1
   done

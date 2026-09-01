@@ -25,6 +25,13 @@ jobs:
       NEXT_PUBLIC_SITE_URL: https://www.nextstarter.app
       NEXT_PUBLIC_SITE_NAME: NextStarter
       NEXT_PUBLIC_SITE_META_DESCRIPTION: A modern Next.js boilerplate for building production-ready web applications.
+      # Without NEXT_PUBLIC_PRO_URL the upsell surface switches off and /pro
+      # 404s by design (see src/lib/upsell.ts), so a probe that omits it builds
+      # an app with no page to probe. This is why every earlier run reported
+      # "localhost 404" — mirror what playwright.yml passes.
+      NEXT_PUBLIC_PRO_URL: ${{ vars.NEXT_PUBLIC_PRO_URL }}
+      NEXT_PUBLIC_POLAR_PORTAL_URL: ${{ vars.NEXT_PUBLIC_POLAR_PORTAL_URL }}
+      NEXT_PUBLIC_SUPPORT_EMAIL: ${{ vars.NEXT_PUBLIC_SUPPORT_EMAIL }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
