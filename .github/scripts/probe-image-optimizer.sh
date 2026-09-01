@@ -154,5 +154,24 @@ for engine in chromium firefox webkit; do
 done
 
 stop_server
+
+# Everything above passes, so the optimizer, the file, the address and all
+# three engines are fine on a server of their own. The one thing none of it
+# reproduces is the real suite: 138 tests sharing one server, this test running
+# after roughly forty others. Narrow that by scope — Playwright starts and owns
+# its own server for each of these, which is why the port must be free first.
+run_suite() {
+  local label=$1; shift
+  echo
+  echo "=============== SUITE: $label ==============="
+  npx playwright test "$@" --project=chromium --reporter=line 2>&1 \
+    | grep -vE 'injected env|Loaded environment variables' \
+    | tail -15
+}
+
+run_suite "the failing test alone" --grep "product screenshots load"
+run_suite "its whole spec file" tests/pro-page.spec.ts
+run_suite "the entire chromium project"
+
 echo
 echo "probe finished"
