@@ -52,39 +52,9 @@ jobs:
           echo "--- getent hosts localhost ---"; getent hosts localhost || echo "(none)"
           echo "--- getent ahosts localhost ---"; getent ahosts localhost || echo "(none)"
 
-      - name: Probe the optimizer over curl
+      # Curl rounds and browser rounds share one script so that server startup,
+      # shutdown and the "am I talking to the real app?" check live in exactly
+      # one place. The previous split let an orphaned server serve 404s to every
+      # browser round without anything noticing.
+      - name: Probe the optimizer
         run: bash .github/scripts/probe-image-optimizer.sh
-
-      # The decisive comparison: one server, one container, the same page loaded
-      # once per address. If localhost stalls and 127.0.0.1 does not, the bug is
-      # address resolution and the image was never involved.
-      - name: Probe with a real browser, both addresses
-        run: |
-          rm -rf .next/cache/images
-          npm run start > /tmp/server.log 2>&1 &
-          for _ in $(seq 1 60); do
-            curl -sS -o /dev/null --max-time 2 http://127.0.0.1:3000/pro 2>/dev/null && break
-            sleep 1
-          done
-
-          echo "--- listening sockets ---"
-          (ss -ltn || netstat -ltn || true) 2>&1 | head -20
-          echo "--- reachability, before any browser runs ---"
-          curl -sS -o /dev/null --max-time 10 \
-            -w 'localhost   status=%{http_code} time=%{time_total}\n' \
-            http://localhost:3000/pro || echo "localhost   UNREACHABLE (curl exit $?)"
-          curl -sS -o /dev/null --max-time 10 \
-            -w '127.0.0.1   status=%{http_code} time=%{time_total}\n' \
-            http://127.0.0.1:3000/pro || echo "127.0.0.1   UNREACHABLE (curl exit $?)"
-
-          # Each engine gets a cold image cache so the first request is always
-          # a real encode, never a cache hit from the previous engine.
-          for engine in chromium firefox webkit; do
-            for base in http://localhost:3000 http://127.0.0.1:3000; do
-              rm -rf .next/cache/images
-              node .github/scripts/probe-image-browser.mjs "$base" "$engine" || true
-            done
-          done
-
-          echo "--- server output ---"
-          cat /tmp/server.log

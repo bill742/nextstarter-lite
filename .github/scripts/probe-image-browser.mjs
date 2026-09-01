@@ -64,7 +64,14 @@ console.log(`  page loaded in ${Date.now() - t0}ms`);
 
 for (const section of ["#database", "#dashboard", "#internationalization"]) {
   const figure = page.locator(section).locator("figure");
-  await figure.scrollIntoViewIfNeeded();
+  // A missing figure means we are on the wrong page, not that the image is
+  // slow — say so instead of dying with a 30s locator timeout.
+  try {
+    await figure.scrollIntoViewIfNeeded({ timeout: 5000 });
+  } catch {
+    console.log(`  ${section.padEnd(22)} NO FIGURE ON PAGE (wrong server? title=${await page.title()})`);
+    continue;
+  }
   const image = figure.locator("img");
   const t = Date.now();
   let width = 0;
