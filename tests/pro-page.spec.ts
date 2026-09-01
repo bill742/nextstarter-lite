@@ -83,14 +83,37 @@ test.describe("Pro page", () => {
       const image = figure.getByRole("img", { name: alt });
       await expect(image).toBeVisible();
 
-      // These sit well below the fold and next/image lazy-loads by default,
-      // so nothing is fetched until a reader gets here.
-      await figure.scrollIntoViewIfNeeded();
+      // Ask for the optimized URL ourselves rather than waiting on the
+      // browser's own fetch of it.
+      //
+      // Polling naturalWidth here was racy. These images are the only
+      // /_next/image traffic in the suite, so the first request for one always
+      // lands on a cold optimizer, and when the whole project runs in one
+      // worker that request intermittently gets no response at all — the
+      // request goes out, nothing comes back, and no `requestfailed` fires
+      // either, so naturalWidth sits at 0 until the poll gives up. It survives
+      // retries because the browser never re-issues an image request it has
+      // already abandoned. Putting a proxy in front of the server, or enabling
+      // tracing, makes it disappear, and curl against the same optimizer never
+      // reproduces it at any width, order, or cache state — so it is a
+      // connection-level race between the browser and `next start`, not
+      // something the page or the optimizer gets wrong.
+      //
+      // A direct request tests the thing this case actually cares about, and
+      // tests it more thoroughly: the path resolves, the optimizer answers,
+      // and real image bytes come back.
+      const src = await image.getAttribute("src");
+      expect(src, "next/image should render a src").toBeTruthy();
 
-      // naturalWidth stays 0 when the request 404s.
-      await expect
-        .poll(() => image.evaluate((img: HTMLImageElement) => img.naturalWidth))
-        .toBeGreaterThan(0);
+      const optimized = await page.request.get(new URL(src!, page.url()).href);
+      // A path that points at nothing comes back 400 from the optimizer rather
+      // than 404 — it rejects the source URL before it ever reads a file.
+      expect(
+        optimized.status(),
+        `${section} screenshot should be served, not rejected`
+      ).toBe(200);
+      expect(optimized.headers()["content-type"]).toMatch(/^image\//);
+      expect((await optimized.body()).byteLength).toBeGreaterThan(0);
 
       // The caption is a separate line of copy, not a repeat of the alt text:
       // a screen reader announces both.
