@@ -1,4 +1,5 @@
 import NavLink from "@/components/nav-link";
+import { hasUpdates } from "@/lib/changelog";
 import { isUpsellEnabled } from "@/lib/upsell";
 
 const allQuickLinkItems = [
@@ -7,11 +8,14 @@ const allQuickLinkItems = [
   { href: "#features", id: 3, label: "Features" },
   { href: "/pro", id: 5, label: "Upgrade to Pro" },
   { href: "#getting-started", id: 4, label: "Getting Started" },
+  { href: "/whats-new", id: 6, label: "What’s New" },
 ];
 
 /** Filtered so the footer never links to a switched-off route. */
 const quickLinkItems = allQuickLinkItems.filter(
-  (item) => item.href !== "/pro" || isUpsellEnabled
+  (item) =>
+    (item.href !== "/pro" || isUpsellEnabled) &&
+    (item.href !== "/whats-new" || hasUpdates)
 );
 
 /**

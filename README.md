@@ -147,6 +147,22 @@ npm run dev
 
 ---
 
+## Making this yours
+
+Two files carry NextStarter's own content rather than yours, and both are built
+to be emptied:
+
+- **`src/lib/changelog.ts`** — the entries behind `/whats-new`. Empty both
+  arrays and the route disappears along with its navigation entries and its
+  sitemap listing; add your first entry and it comes back. `CHANGELOG.md` is the
+  complete record it is curated from — reset that too.
+- **`.env`** — leaving `NEXT_PUBLIC_PRO_URL` unset switches off the whole upsell
+  surface: the home-page teaser, its navigation entries, and the `/pro` and
+  `/thanks` routes. A project built on this starter never advertises NextStarter
+  Pro unless you point it at a checkout of your own.
+
+---
+
 ## Scripts
 
 | Command         | Description                             |
