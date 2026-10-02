@@ -55,7 +55,9 @@ test.describe("Privacy page", () => {
 
     console.log("Checking metadata on the privacy page");
 
-    expect(await page.title()).toBe("Privacy | NextStarter");
+    expect(await page.title()).toBe(
+      `Privacy | ${process.env.NEXT_PUBLIC_SITE_NAME}`
+    );
 
     // The opposite of /thanks: a privacy notice people cannot find is not a
     // notice, so it must stay crawlable.
