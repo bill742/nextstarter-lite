@@ -7,6 +7,7 @@ import Logo from "./logo";
 import MobileMenu from "./mobile-menu";
 import ModeToggle from "./mode-toggle";
 import Navigation from "./navigation";
+import { headerCta } from "./navigation-items";
 
 /**
  * Header component for site-wide navigation and branding
@@ -49,7 +50,7 @@ const Header = () => {
 
         {/* Right side actions */}
         <div className="flex items-center gap-3">
-          <Cta />
+          {headerCta ? <Cta item={headerCta} /> : null}
 
           <ModeToggle />
 

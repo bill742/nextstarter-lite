@@ -1,0 +1,40 @@
+{
+  "$comment": "Read by apply.mjs. Layers run in order: copy the layer's overlay over the project, then remove its paths and package.json scripts. `shared` always runs; the mode's own layer runs after it.",
+  "layers": {
+    "shared": {
+      "remove": [
+        ".skills",
+        "CHANGELOG.md",
+        "CLAUDE.md",
+        ".github/workflows/scaffold.yml",
+        "scripts/checkout-smoke.mjs",
+        "public/screenshots",
+        "src/app/pro",
+        "src/app/thanks",
+        "src/components/pro",
+        "src/components/landing-page/upgrade.tsx",
+        "src/lib/faq.ts",
+        "tests/pro-page.spec.ts",
+        "tests/thanks-page.spec.ts",
+        "tests/whats-new-page.spec.ts"
+      ],
+      "removeScripts": ["test:checkout"]
+    },
+    "blank": {
+      "remove": [
+        "src/app/whats-new",
+        "src/components/footer/quick-links.tsx",
+        "src/components/landing-page",
+        "src/lib/changelog.ts",
+        "tests/cross-route-navigation.spec.ts",
+        "tests/home-page-header-and-sections.spec.ts",
+        "tests/mobile-menu.spec.ts"
+      ],
+      "removeScripts": []
+    }
+  },
+  "modes": {
+    "blank": ["shared", "blank"],
+    "full": ["shared"]
+  }
+}

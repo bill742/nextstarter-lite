@@ -140,6 +140,19 @@ cd my-project
 npm run dev
 ```
 
+The CLI asks which starting point you want:
+
+- **blank** (default) — an empty home page inside the app shell: header,
+  footer, light/dark theme, privacy notice, 404 page, tests, and CI.
+- **full** — this site's landing page, kept as example content to adapt.
+
+Either way the NextStarter-specific content is stripped: the Pro pages, the
+changelog, and this site's metadata. The rules for that live in
+[`.nextstarter/`](.nextstarter/apply.mjs), and the `Scaffold` workflow builds
+and tests both starting points on every push. Cloning the repository by hand
+gets you the unmodified site; run `node .nextstarter/apply.mjs blank` (or
+`full`) to do the same cleanup yourself.
+
 | Variable                | Description                                         |
 | ----------------------- | --------------------------------------------------- |
 | `NEXT_PUBLIC_SITE_URL`  | Full URL of your site (e.g. `https://example.com/`) |
