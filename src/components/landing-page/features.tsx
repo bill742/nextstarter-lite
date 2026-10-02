@@ -17,7 +17,11 @@ const Features = () => {
             <FeatureItem content="WCAG 2.1 AA accessibility, verified with Axe-core" />
             <FeatureItem content="Lighthouse 100/100/100/100 on desktop, enforced in CI" />
             <FeatureItem content="VS Code settings and recommended extensions" />
-            <FeatureItem content="ShadCN/UI for theming and component library" />
+            <FeatureItem
+              content="ShadCN/UI for theming and component library — "
+              link="/ui-components"
+              linkText="see every component"
+            />
             <FeatureItem content="Built-in light and dark themes" />
             <FeatureItem content="End-to-end testing with Playwright" />
             <FeatureItem content="ESLint rules and Prettier with Tailwind class sorting" />

@@ -61,6 +61,22 @@ export const formatUpdateDate = (date: string): string =>
 /** Updates to this free starter, newest first. */
 export const liteUpdates: UpdateEntry[] = [
   {
+    date: "2026-09-17",
+    id: "ui-components",
+    summary:
+      "A new /ui-components page shows every component the starter ships — buttons, cards, carousels, and tooltips — in each variant and state, alongside the colour and type foundations, with the code for each example. The previews are the real components rather than screenshots, so what you see is what you get.",
+    tag: "Added",
+    title: "A live catalogue of the design system",
+  },
+  {
+    date: "2026-09-17",
+    id: "destructive-contrast",
+    summary:
+      "The destructive button's red failed the 4.5:1 contrast minimum against its white label. Nothing rendered that variant until the new component catalogue did, which is how it surfaced; the colour is now darker and the whole palette is back at WCAG 2.1 AA.",
+    tag: "Fixed",
+    title: "A contrast failure in the destructive button",
+  },
+  {
     date: "2026-08-31",
     id: "pro-screenshots",
     summary:

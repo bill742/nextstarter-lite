@@ -29,6 +29,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           },
         ]
       : []),
+    // Ungated: the components ship with every copy of the repository, so this
+    // route exists in any configuration.
+    {
+      changeFrequency: "monthly",
+      lastModified: new Date(),
+      priority: 0.7,
+      url: `${siteUrl}/ui-components`,
+    },
     {
       changeFrequency: "yearly",
       lastModified: new Date(),
