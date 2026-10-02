@@ -32,7 +32,9 @@ test.describe("Home page sections", () => {
 
     await nav.getByRole("button", { name: "About" }).click();
     await expect(
-      page.getByRole("heading", { name: "About NextStarter" })
+      page.getByRole("heading", {
+        name: `About ${process.env.NEXT_PUBLIC_SITE_NAME}`,
+      })
     ).toBeVisible();
 
     await nav.getByRole("button", { name: "Tech Stack" }).click();
@@ -60,7 +62,9 @@ test.describe("Home page navigation scroll behavior", () => {
 
     await expect(page.locator("section#about")).toBeInViewport();
     await expect(
-      page.getByRole("heading", { name: "About NextStarter" })
+      page.getByRole("heading", {
+        name: `About ${process.env.NEXT_PUBLIC_SITE_NAME}`,
+      })
     ).toBeInViewport();
   });
 

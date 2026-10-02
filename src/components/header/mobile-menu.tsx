@@ -6,7 +6,7 @@ import { useEffect, useEffectEvent } from "react";
 import NavLink from "@/components/nav-link";
 
 import Cta from "./cta";
-import { navigationItems } from "./navigation-items";
+import { headerCta, navigationItems } from "./navigation-items";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -95,9 +95,11 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
         </nav>
 
         {/* Mobile CTA */}
-        <div className="shrink-0 border-t border-stone-200/50 p-6 dark:border-stone-800/50">
-          <Cta onNavigate={onClose} />
-        </div>
+        {headerCta ? (
+          <div className="shrink-0 border-t border-stone-200/50 p-6 dark:border-stone-800/50">
+            <Cta item={headerCta} onNavigate={onClose} />
+          </div>
+        ) : null}
       </div>
     </>
   );
