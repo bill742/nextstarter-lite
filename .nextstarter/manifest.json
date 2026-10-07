@@ -22,13 +22,16 @@
     },
     "blank": {
       "remove": [
+        "src/app/ui-components",
         "src/app/whats-new",
         "src/components/footer/quick-links.tsx",
         "src/components/landing-page",
+        "src/components/ui-components",
         "src/lib/changelog.ts",
         "tests/cross-route-navigation.spec.ts",
         "tests/home-page-header-and-sections.spec.ts",
-        "tests/mobile-menu.spec.ts"
+        "tests/mobile-menu.spec.ts",
+        "tests/ui-components-page.spec.ts"
       ],
       "removeScripts": []
     }

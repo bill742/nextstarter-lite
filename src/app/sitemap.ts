@@ -29,6 +29,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           },
         ]
       : []),
+    // Ungated: the route exists in any configuration of this site. The blank
+    // starter deletes the route and replaces this sitemap.
+    {
+      changeFrequency: "monthly",
+      lastModified: new Date(),
+      priority: 0.7,
+      url: `${siteUrl}/ui-components`,
+    },
     {
       changeFrequency: "yearly",
       lastModified: new Date(),

@@ -12,6 +12,26 @@ code — when something ships that a visitor would care about, it belongs in bot
 
 ## [Unreleased]
 
+### Added
+
+- `/ui-components`, a live catalogue of the design system: the colour ramps and
+  semantic tokens, the type scale, and every component in `src/components/ui`
+  — Button, Card, Carousel, and Tooltip — in each variant, size, and state,
+  with a copyable snippet under each example. The previews import the real
+  components, so they cannot drift from what ships, and the Axe-core scan runs
+  over the page in both themes on every push. Reachable from the footer and
+  from the Features list on the home page.
+- `FeatureItem` on the home page now renders internal links with `next/link`
+  instead of forcing every link to open in a new tab.
+
+### Changed
+
+- The light-mode `--color-destructive` token darkened from
+  `hsl(0, 84.2%, 60.2%)` to `hsl(0, 72.2%, 50.6%)`. The destructive button
+  prints white on it, which was a 3.76:1 contrast failure against WCAG 2.1 AA;
+  it now clears 4.5:1. The bug had been latent because no page rendered that
+  variant until the catalogue did.
+
 ## [1.0.0] - 2026-09-02
 
 First tagged release. The project split from the private NextStarter repository

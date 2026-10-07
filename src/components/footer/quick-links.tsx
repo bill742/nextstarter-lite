@@ -9,6 +9,7 @@ const allQuickLinkItems = [
   { href: "/pro", id: 5, label: "Upgrade to Pro" },
   { href: "#getting-started", id: 4, label: "Getting Started" },
   { href: "/whats-new", id: 6, label: "What’s New" },
+  { href: "/ui-components", id: 7, label: "Components" },
 ];
 
 /** Filtered so the footer never links to a switched-off route. */
