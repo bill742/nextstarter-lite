@@ -191,7 +191,9 @@ test.describe("UI Components page", () => {
 
     console.log("Checking metadata on the UI Components page");
 
-    expect(await page.title()).toBe("UI Components | NextStarter");
+    expect(await page.title()).toBe(
+      `UI Components | ${process.env.NEXT_PUBLIC_SITE_NAME}`
+    );
 
     const robotsMeta = await page
       .locator('meta[name="robots"]')
