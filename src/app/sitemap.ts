@@ -29,8 +29,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           },
         ]
       : []),
-    // Ungated: the components ship with every copy of the repository, so this
-    // route exists in any configuration.
+    // Ungated: the route exists in any configuration of this site. The blank
+    // starter deletes the route and replaces this sitemap.
     {
       changeFrequency: "monthly",
       lastModified: new Date(),
