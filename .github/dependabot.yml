@@ -39,4 +39,10 @@ updates:
       # ships a release that supports ^10.
       - dependency-name: "eslint"
         update-types: ["version-update:semver-major"]
+      # TypeScript 7 is the native (Go) port and drops the classic compiler
+      # API that typescript-eslint relies on; its peer range stops at <6.1.0.
+      # 6.x bumps still come through. Lift this once typescript-eslint
+      # supports 7.
+      - dependency-name: "typescript"
+        versions: [">=7"]
     open-pull-requests-limit: 5
