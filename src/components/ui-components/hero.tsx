@@ -20,15 +20,15 @@ const Hero = () => (
 
     <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-stone-600 dark:text-stone-300">
       Every component in{" "}
-      <code className="font-mono text-base">src/components/ui</code>, plus the
-      colour and type foundations they are built from. The previews are the real
-      components — they render here exactly as they will in your app, and the
+      <code className="font-mono text-base">src/components/ui</code>, along with
+      the colour and type foundations they are built from. The previews are the
+      real components, render here exactly as they will in your app, and the
       accessibility scan that runs on every push scans this page too.
     </p>
 
     <p className="mx-auto mt-4 max-w-2xl leading-relaxed text-stone-600 dark:text-stone-400">
-      Switch the theme with the toggle in the header: everything below follows
-      it, because none of it hard-codes a colour.
+      Everything below works with both the light and dark themes. Switch the
+      theme with the toggle in the header to preview.
     </p>
   </section>
 );

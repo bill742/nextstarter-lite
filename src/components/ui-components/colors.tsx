@@ -137,7 +137,7 @@ const paletteCode = `/* src/app/globals.css */
 <p className="text-stone-600 dark:text-stone-400">Body copy</p>
 <a className="hover:text-orange-700 dark:hover:text-orange-400">A link</a>`;
 
-const semanticCode = `/* src/app/globals.css — one definition per theme */
+const semanticCode = `/* src/app/globals.css - one definition per theme */
 @theme {
   --color-card: #ffffff;
   --color-card-foreground: hsl(222.2, 84%, 4.9%);
@@ -160,12 +160,16 @@ const Colors = () => (
   <Section
     intro={
       <p>
-        Two ramps and a set of semantic tokens, all defined in{" "}
-        <code className="font-mono text-sm">src/app/globals.css</code>. Stone
-        carries the interface, orange carries emphasis, and the semantic tokens
-        are what the components in{" "}
-        <code className="font-mono text-sm">src/components/ui</code> are written
-        against.
+        Every colour is defined in{" "}
+        <code className="font-mono text-sm">src/app/globals.css</code>. Stone, a
+        neutral grey, is used for most of the interface, and orange is kept for
+        the few things that should stand out. The components in{" "}
+        <code className="font-mono text-sm">src/components/ui</code> don&rsquo;t
+        use those shades directly. They use named tokens such as{" "}
+        <code className="font-mono text-sm">card</code> and{" "}
+        <code className="font-mono text-sm">border</code>, which describe what a
+        colour is for, so changing a token restyles every component that uses
+        it.
       </p>
     }
     section={sections.color}
@@ -180,7 +184,7 @@ const Colors = () => (
 
     <Example
       code={paletteCode}
-      description="The accent. Links, hover states, and the active item in a navigation — deliberately a small share of any screen."
+      description="The accent. Links, hover states, and the active item in a navigation."
       title="Orange"
     >
       <Swatches swatches={orange} />
@@ -188,7 +192,7 @@ const Colors = () => (
 
     <Example
       code={semanticCode}
-      description="Redefined under .dark, so these swatches change when you switch themes. Build with these and a component themes itself."
+      description="Each token has one value for light mode and another for dark mode, so these swatches change when you switch themes. A component built with these tokens works in both modes without any dark: classes of its own."
       title="Semantic tokens"
     >
       <Swatches swatches={semantic} />

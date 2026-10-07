@@ -86,7 +86,7 @@ const Buttons = () => (
         the variants, and a <code className="font-mono text-sm">Slot</code> from
         Radix behind <code className="font-mono text-sm">asChild</code> so a
         button&rsquo;s styling can be handed to a link. Every one below is
-        focusable — tab through them to see the focus ring the whole system
+        focusable. Tab through them to see the focus ring the whole system
         shares.
       </p>
     }
@@ -175,7 +175,7 @@ const Buttons = () => (
             Invalid
           </Button>
         </Specimen>
-        <Specimen label="asChild — renders an anchor">
+        <Specimen label="asChild - renders an anchor">
           <Button asChild>
             <Link href="/">
               Home page

@@ -36,7 +36,7 @@ const sideCode = `import {
   </Tooltip>
 </TooltipProvider>`;
 
-const iconCode = `{/* The trigger still needs its own name — the tooltip is not one */}
+const iconCode = `{/* Label the button for screen readers; the tooltip doesn't count as a label */}
 <Tooltip>
   <TooltipTrigger asChild>
     <Button size="icon-sm" variant="ghost">
@@ -56,10 +56,10 @@ const Tooltips = () => (
   <Section
     intro={
       <p>
-        Radix underneath, so a tooltip opens on hover <em>and</em> on keyboard
+        With Radix underneath, a tooltip opens on hover <em>and</em> on keyboard
         focus, closes on <kbd className="font-mono text-sm">Esc</kbd>, and is
         associated with its trigger for assistive technology. It is a hint about
-        a control, never the control&rsquo;s only label — tab through the
+        a control, never the control&rsquo;s only label. Tab through the
         examples below rather than hovering them to see the difference.
       </p>
     }
@@ -88,7 +88,7 @@ const Tooltips = () => (
 
     <Example
       code={iconCode}
-      description="The pairing this component exists for — and the one most often got wrong. The trigger keeps its own accessible name; the tooltip adds detail."
+      description="Icon buttons are where tooltips are most useful, and where they most often go wrong. Give the button its own hidden label for screen readers, and use the tooltip only for extra detail."
       title="On an icon button"
     >
       <TooltipProvider>

@@ -22,7 +22,7 @@ const horizontalCode = `import {
 } from "@/components/ui/carousel";
 
 {/* px-12 leaves room for the controls, which sit outside the track.
-    aria-label names the region — required once a page has two of them. */}
+    aria-label names the region - required once a page has two of them. */}
 <div className="px-12">
   <Carousel aria-label="Product screenshots" opts={{ align: "start" }}>
     <CarouselContent>

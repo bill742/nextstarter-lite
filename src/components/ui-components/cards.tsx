@@ -49,7 +49,7 @@ const actionCode = `{/* CardAction moves itself into the header's second column 
   </CardAction>
 </CardHeader>`;
 
-const surfaceCode = `{/* No header, no footer — Card is just the surface */}
+const surfaceCode = `{/* No header or footer */}
 <Card className="gap-2 py-5">
   <CardContent>
     <p className="text-2xl font-bold">98</p>
@@ -74,7 +74,7 @@ const Cards = () => (
     intro={
       <p>
         Seven parts that compose rather than one component with a dozen props.
-        Use only the parts you need — a card with nothing but{" "}
+        You can use only the parts you need and using a card with nothing but{" "}
         <code className="font-mono text-sm">CardContent</code> inside it is a
         perfectly ordinary use of it. Colours come from the{" "}
         <code className="font-mono text-sm">card</code> tokens, so cards invert

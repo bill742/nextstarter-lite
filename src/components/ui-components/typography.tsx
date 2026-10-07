@@ -21,17 +21,17 @@ type TypeStep = {
 const scale: TypeStep[] = [
   {
     className: "font-serif text-3xl font-bold md:text-4xl",
-    role: "h1 — one per page",
+    role: "h1 - one per page",
     sample: "Ship accessible Next.js apps",
   },
   {
     className: "font-serif text-2xl font-bold md:text-3xl",
-    role: "h2 — section heading",
+    role: "h2 - section heading",
     sample: "What you get",
   },
   {
     className: "text-lg font-medium",
-    role: "h3 — subsection heading",
+    role: "h3 - subsection heading",
     sample: "Tested on every push",
   },
   {
@@ -46,12 +46,12 @@ const scale: TypeStep[] = [
   },
   {
     className: "text-sm",
-    role: "Small — captions, meta",
+    role: "Small - captions, meta",
     sample: "Updated 17 September 2026",
   },
   {
     className: "font-mono text-sm",
-    role: "Mono — code and values",
+    role: "Mono - code and values",
     sample: "npx create-next-app",
   },
 ];
@@ -107,9 +107,9 @@ const Typography = () => (
   <Section
     intro={
       <p>
-        A serif display face for headings against a sans body, and a single mono
-        for code. The scale below is the one the rest of the site is built from
-        — matching it is what makes a new page look like it belongs.
+        Headings use a serif font, body text uses a sans-serif, and code uses a
+        monospace font. Every page on the site uses the text sizes below. Stick
+        to them and a new page will look like part of the same site.
       </p>
     }
     section={sections.typography}
@@ -128,7 +128,7 @@ const Typography = () => (
 
     <Example
       code={familyCode}
-      description="Geist Sans and Geist Mono are loaded by next/font in the root layout and exposed as CSS variables; the serif is the system stack, so it costs nothing to download."
+      description="Geist Sans and Geist Mono are web fonts, loaded by next/font in the root layout. The serif uses fonts already installed on the visitor's device, so the browser has nothing extra to download, though it can look slightly different from one device to another."
       title="Font families"
     >
       <ul className="grid gap-6 sm:grid-cols-3">
