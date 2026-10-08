@@ -45,4 +45,8 @@ updates:
       # supports 7.
       - dependency-name: "typescript"
         versions: [">=7"]
+      # @types/node tracks the runtime major in .node-version and
+      # engines.node. Bump all three together when moving to a new Node line.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     open-pull-requests-limit: 5
