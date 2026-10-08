@@ -33,7 +33,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version-file: '.node-version'
 
       # `npm ci` installs strictly from package-lock.json, so this verifies the
       # exact tree a build would use rather than a fresh resolution.

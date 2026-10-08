@@ -32,7 +32,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version-file: '.node-version'
 
       # `npm ci` installs the ESLint version package-lock.json pins along with
       # every plugin eslint.config.mjs loads, so CI lints with the same
