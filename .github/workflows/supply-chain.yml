@@ -45,5 +45,31 @@ jobs:
 
       # Known advisories. Scoped to high and above so a low-severity transitive
       # advisory does not block every pull request.
+      #
+      # ALLOWLIST holds advisories with no patched release that cannot be
+      # exploited here. Every other high or critical advisory still fails the
+      # job. Remove an entry as soon as a fix ships.
+      #
+      # - GHSA-vfj7-8cjw-p6xm (braces <=3.0.3, no fix yet): reached only via
+      #   @next/eslint-plugin-next -> fast-glob -> micromatch at lint time,
+      #   which expands the project's own glob patterns, never external input.
       - name: Audit for known vulnerabilities
-        run: npm audit --audit-level=high
+        env:
+          ALLOWLIST: GHSA-vfj7-8cjw-p6xm
+        run: |
+          npm audit --json > audit.json || true
+          jq -e '.vulnerabilities' audit.json > /dev/null || { cat audit.json; exit 1; }
+          jq -r --arg allow "$ALLOWLIST" '
+            ($allow | split(" ")) as $ids
+            | [.vulnerabilities[].via[] | objects]
+            | unique_by(.url)
+            | map(select(.severity == "high" or .severity == "critical"))
+            | map(select((.url | split("/") | last) as $id | $ids | index($id) | not))
+            | .[] | "\(.severity)\t\(.name)\t\(.url)\t\(.title)"
+          ' audit.json > blocking.txt
+          if [ -s blocking.txt ]; then
+            echo "::error::High or critical advisories found:"
+            cat blocking.txt
+            exit 1
+          fi
+          echo "No blocking advisories (allowlisted: $ALLOWLIST)."
