@@ -222,7 +222,7 @@ jobs:
 
       - name: Upload code review report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: code-review-report
           path: code-review-report.md
@@ -395,7 +395,7 @@ jobs:
         run: npm run build
       - name: Run Playwright tests
         run: npx playwright test
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
@@ -426,7 +426,7 @@ jobs:
         # and asserts against the median of three runs. Thresholds and the
         # reasoning behind them live in the config files.
         run: npx --yes @lhci/cli@0.15.x autorun --config=${{ matrix.config }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: lighthouse-report-${{ matrix.preset }}
