@@ -354,7 +354,10 @@ jobs:
         id: node
         run: echo "version=$(cat .node-version)" >> "$GITHUB_OUTPUT"
 
-      - uses: millionco/react-doctor@v2
+      # Pinned to a commit, not the movable `v2` tag: this third-party action
+      # runs with write access to PRs, issues and statuses. Dependabot
+      # (github-actions in .github/dependabot.yml) proposes SHA bumps.
+      - uses: millionco/react-doctor@695e46eee203a5d1855020191aa7e9c010a1250e # v2.4.0
         # Advisory by default: React Doctor reports findings on every PR — a
         # sticky summary comment, inline review comments, and a commit status
         # with the health score — but never fails the check, so it won't red-X

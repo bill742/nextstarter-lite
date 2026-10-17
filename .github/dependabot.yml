@@ -50,3 +50,23 @@ updates:
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
     open-pull-requests-limit: 5
+
+  # Workflow actions. Third-party actions are pinned to commit SHAs in the
+  # workflows (with the version as a trailing comment), and Dependabot bumps
+  # SHA and comment together. Same 7-day cooldown and grouping as npm above,
+  # for the same reason: a hijacked release should expire before it is
+  # proposed here.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    cooldown:
+      default-days: 7
+      semver-major-days: 7
+      semver-minor-days: 7
+      semver-patch-days: 7
+    groups:
+      minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    open-pull-requests-limit: 5
