@@ -21,7 +21,7 @@ All prerequisites are already met! ✓
 
 ```bash
 # Check workflow file
-ls -la .github/workflows/code-review.yml
+ls -la .github/workflows/ci.yml
 
 # Check review script
 ls -la .skills/review-code.sh
@@ -33,7 +33,7 @@ chmod +x .skills/review-code.sh
 ### Step 2: Commit and Push
 
 ```bash
-git add .github/workflows/code-review.yml
+git add .github/workflows/ci.yml
 git add .skills/review-code.sh
 git commit -m "Add code review GitHub Action"
 git push origin main
@@ -43,7 +43,7 @@ git push origin main
 
 1. Go to your repository on GitHub
 2. Click **Actions** tab
-3. Look for **Code Review** in the workflows list
+3. Look for **CI** in the workflows list (code review is its `code-review` job)
 4. You should see it running (or completed)
 
 **That's it!** The workflow is now active.
@@ -73,7 +73,7 @@ git push origin test-code-review
 ### Or Trigger Manually
 
 1. Go to **Actions** tab
-2. Select **Code Review** workflow
+2. Select **CI** workflow
 3. Click **Run workflow** dropdown
 4. Select branch (default: main)
 5. Click **Run workflow** button
@@ -137,7 +137,7 @@ Force code review to pass before merging:
 
 ### Change When It Runs
 
-Edit `.github/workflows/code-review.yml`:
+Edit the `on:` block of `.github/workflows/ci.yml` (it applies to every job):
 
 ```yaml
 on:
@@ -203,7 +203,7 @@ Add to workflow file:
 Add status badge to your README.md:
 
 ```markdown
-![Code Review](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/code-review.yml/badge.svg)
+![Code Review](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/ci.yml/badge.svg)
 ```
 
 Replace `YOUR_USERNAME` and `YOUR_REPO`.
@@ -221,7 +221,7 @@ Edit the `Comment on PR` step in workflow to customize message format.
 
 ### Workflow Not Appearing
 
-**Problem:** Don't see "Code Review" in Actions tab
+**Problem:** Don't see "CI" in Actions tab
 
 **Solutions:**
 1. Check file is in `.github/workflows/`

@@ -149,7 +149,7 @@ The code review script is now integrated with GitHub Actions!
 
 Every push and pull request automatically runs the code review script.
 
-**Workflow file:** `.github/workflows/code-review.yml`
+**Workflow file:** `.github/workflows/ci.yml` (the `code-review` job)
 
 **Features:**
 
@@ -164,7 +164,7 @@ Every push and pull request automatically runs the code review script.
 You can also run the review manually:
 
 1. Go to **Actions** tab in GitHub
-2. Select **Code Review** workflow
+2. Select **CI** workflow
 3. Click **Run workflow**
 4. View results and download report
 

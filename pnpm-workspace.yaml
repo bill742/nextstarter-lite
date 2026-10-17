@@ -30,8 +30,9 @@ onlyBuiltDependencies:
 # template, where it would break a brand-new project on its first command.
 #
 # This repository's own supply-chain checks live in .github/dependabot.yml
-# (release cooldown) and .github/workflows/supply-chain.yml (signature
-# verification), which run on npm, the package manager this repo installs with.
+# (release cooldown) and the supply-chain job in .github/workflows/ci.yml
+# (signature verification), which run on npm, the package manager this repo
+# installs with.
 #
 # react-doctor/require-pnpm-hardening flags the missing `trustPolicy` on every
 # scan. Reviewed 2026-08-25 and accepted as a waiver, not a false positive: the
