@@ -254,7 +254,7 @@ npm run lint
 |------|---------|----------|
 | `ci.yml` → `eslint` | Lint JavaScript/TypeScript (SARIF) | Push, PR, Weekly, Manual |
 | `ci.yml` → `supply-chain` | Verify signatures, audit advisories | Push, PR, Weekly, Manual |
-| `ci.yml` → `typecheck` | `next typegen`, then `npm run typecheck` | Push, PR, Manual |
+| `ci.yml` → `typecheck` | `npm run typecheck` (`next typegen`, then `tsc`) | Push, PR, Manual |
 | `ci.yml` → `code-review` | Review against AGENTS.md | Push, PR, Manual |
 | `ci.yml` → `react-doctor` | React Doctor scan | Push, PR |
 | `ci.yml` → `playwright` | Build and run Playwright tests | Push, PR, Manual |

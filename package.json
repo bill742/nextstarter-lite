@@ -19,7 +19,7 @@
     "lint": "eslint",
     "test": "npx playwright test",
     "test:checkout": "node scripts/checkout-smoke.mjs",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "doctor": "npx react-doctor@latest"
   },
   "dependencies": {

@@ -167,12 +167,10 @@ jobs:
       - *checkout
       - *setup-node
       - *install
-      # next-env.d.ts and .next/types are gitignored, and a clean checkout has
-      # neither. Without them tsc still passes but skips the typed-route and
-      # PageProps/LayoutProps checks a local run (after any dev or build) gets.
-      - name: Generate Next.js route types
-        run: npx next typegen
-      - name: Run tsc
+      # The script runs `next typegen` before tsc: next-env.d.ts and
+      # .next/types are gitignored, and without them tsc skips the checks that
+      # page and layout exports match what Next.js expects.
+      - name: Run type check
         run: npm run typecheck
 
   # Reviews the code against AGENTS.md with .skills/review-code.sh, comments
