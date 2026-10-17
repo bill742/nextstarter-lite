@@ -34,7 +34,7 @@ jobs:
       NEXT_PUBLIC_SITE_META_DESCRIPTION: A project created from the NextStarter template.
     steps:
     - uses: actions/checkout@v5
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v7
       with:
         node-version-file: '.node-version'
         cache: 'npm'
