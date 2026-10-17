@@ -60,11 +60,10 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    # Only default-days: the semver-*-days keys are rejected for this
+    # ecosystem, and default-days alone already covers every update type.
     cooldown:
       default-days: 7
-      semver-major-days: 7
-      semver-minor-days: 7
-      semver-patch-days: 7
     groups:
       minor-and-patch:
         patterns: ["*"]
