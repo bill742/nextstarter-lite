@@ -2,9 +2,8 @@
 
 A modern Next.js boilerplate to ship production-ready projects fast — with TypeScript, Tailwind CSS v4, accessibility, testing, and developer tooling pre-configured.
 
-[![ESLint](https://github.com/bill742/nextstarter-lite/actions/workflows/eslint.yml/badge.svg)](https://github.com/bill742/nextstarter-lite/actions/workflows/eslint.yml)
-[![Playwright Tests](https://github.com/bill742/nextstarter-lite/actions/workflows/playwright.yml/badge.svg)](https://github.com/bill742/nextstarter-lite/actions/workflows/playwright.yml)
-[![Lighthouse](https://github.com/bill742/nextstarter-lite/actions/workflows/lighthouse.yml/badge.svg)](https://github.com/bill742/nextstarter-lite/actions/workflows/lighthouse.yml)
+[![CI](https://github.com/bill742/nextstarter-lite/actions/workflows/ci.yml/badge.svg)](https://github.com/bill742/nextstarter-lite/actions/workflows/ci.yml)
+[![Scaffold](https://github.com/bill742/nextstarter-lite/actions/workflows/scaffold.yml/badge.svg)](https://github.com/bill742/nextstarter-lite/actions/workflows/scaffold.yml)
 
 **[Live Demo](https://www.nextstarter.app/)**
 

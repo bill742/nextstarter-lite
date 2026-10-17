@@ -1,0 +1,433 @@
+# Every check this repository runs, in one workflow.
+#
+# Shared pieces are defined once and reused:
+# - `env` below holds the site configuration every build reads.
+# - The checkout, Node setup and install steps are YAML anchors (`&name`) in
+#   the first job and aliases (`*name`) everywhere else, so action versions and
+#   the Node version (always .node-version, which engines.node matches) can
+#   only change in one place.
+#
+# scaffold.yml stays a separate file: .nextstarter/apply.mjs deletes it from
+# the projects it creates, which it cannot do to a job inside this file.
+
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    # ready_for_review on top of the defaults re-runs everything when a draft
+    # PR is marked ready, so React Doctor posts a fresh summary for reviewers.
+    types: [ opened, synchronize, reopened, ready_for_review ]
+  schedule:
+    # Weekly. Only ESLint and supply-chain run on the schedule: they catch a
+    # new rule finding or a package revoked or re-signed after it was already
+    # in the lockfile, which no code change would trigger.
+    - cron: '25 23 * * 5'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Cancels an in-flight run for the same PR the moment a new commit arrives, so
+# reviewers (and React Doctor's sticky comment) only ever reflect the latest
+# push. Pushes to main are keyed by commit, so none of them cancel each other.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+env:
+  NEXT_PUBLIC_SITE_URL: https://www.nextstarter.app
+  NEXT_PUBLIC_SITE_NAME: ${{ vars.NEXT_PUBLIC_SITE_NAME }}
+  NEXT_PUBLIC_SITE_META_DESCRIPTION: ${{ vars.NEXT_PUBLIC_SITE_METADESCRIPTION }}
+  # Polar checkout link for the "Get NextStarter Pro" CTA. Kept as a repo
+  # variable (Settings → Secrets and variables → Actions → Variables) rather
+  # than hardcoded, so the link can change without a commit and forks of this
+  # starter aren't pinned to someone else's storefront. When it is unset the
+  # upsell surface switches off and the CTA assertion skips; when set, CI
+  # proves the button really points at it.
+  NEXT_PUBLIC_PRO_URL: ${{ vars.NEXT_PUBLIC_PRO_URL }}
+  # The /thanks page's customer portal and support address, same deal: repo
+  # variables, and the assertions that need them skip when they are unset.
+  # Without these the checkout link alone switched the whole upsell surface
+  # on, so the thanks specs ran against a page whose portal link and support
+  # line were never configured.
+  NEXT_PUBLIC_POLAR_PORTAL_URL: ${{ vars.NEXT_PUBLIC_POLAR_PORTAL_URL }}
+  NEXT_PUBLIC_SUPPORT_EMAIL: ${{ vars.NEXT_PUBLIC_SUPPORT_EMAIL }}
+
+jobs:
+  # ESLint findings go to the Security tab as SARIF. The job name is a
+  # required status check in the main ruleset; renaming it blocks merges.
+  eslint:
+    name: Run eslint scanning
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+    steps:
+      - &checkout
+        name: Checkout code
+        uses: actions/checkout@v5
+
+      - &setup-node
+        name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+
+      - &install
+        name: Install dependencies
+        run: npm ci
+
+      # `npm ci` above installs the ESLint version package-lock.json pins along
+      # with every plugin eslint.config.mjs loads, so CI lints with the same
+      # toolchain as `npm run lint` locally.
+      #
+      # The SARIF formatter is only needed for this upload, so it is installed
+      # with --no-save rather than being added to the project's dependencies.
+      - name: Install SARIF formatter
+        run: npm install --no-save @microsoft/eslint-formatter-sarif@3.1.0
+
+      # `--ext` is intentionally absent: flat config selects files itself, and
+      # the flag is a no-op under eslint.config.mjs.
+      - name: Run ESLint
+        env:
+          SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
+        run: npx eslint .
+          --config eslint.config.mjs
+          --format @microsoft/eslint-formatter-sarif
+          --output-file eslint-results.sarif
+        continue-on-error: true
+
+      - name: Upload analysis results to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: eslint-results.sarif
+          wait-for-processing: true
+
+  # npm has no install-time equivalent of pnpm's `trustPolicy: no-downgrade`,
+  # so the trust check runs here instead. `npm audit signatures` verifies every
+  # installed package's tarball against the signature the registry published
+  # for it, and reports how many carry a provenance attestation proving which
+  # build produced them. A tampered or unsigned package fails the job.
+  #
+  # The release-age half of the hardening lives in .github/dependabot.yml.
+  supply-chain:
+    name: Verify dependency signatures
+    runs-on: ubuntu-latest
+    steps:
+      - *checkout
+      - *setup-node
+      # `npm ci` installs strictly from package-lock.json, so this verifies the
+      # exact tree a build would use rather than a fresh resolution.
+      - *install
+
+      - name: Verify registry signatures
+        run: npm audit signatures
+
+      # Known advisories. Scoped to high and above so a low-severity transitive
+      # advisory does not block every pull request.
+      #
+      # ALLOWLIST holds advisories with no patched release that cannot be
+      # exploited here. Every other high or critical advisory still fails the
+      # job. Remove an entry as soon as a fix ships.
+      #
+      # - GHSA-vfj7-8cjw-p6xm (braces <=3.0.3, no fix yet): reached only via
+      #   @next/eslint-plugin-next -> fast-glob -> micromatch at lint time,
+      #   which expands the project's own glob patterns, never external input.
+      - name: Audit for known vulnerabilities
+        env:
+          ALLOWLIST: GHSA-vfj7-8cjw-p6xm
+        run: |
+          npm audit --json > audit.json || true
+          jq -e '.vulnerabilities' audit.json > /dev/null || { cat audit.json; exit 1; }
+          jq -r --arg allow "$ALLOWLIST" '
+            ($allow | split(" ")) as $ids
+            | [.vulnerabilities[].via[] | objects]
+            | unique_by(.url)
+            | map(select(.severity == "high" or .severity == "critical"))
+            | map(select((.url | split("/") | last) as $id | $ids | index($id) | not))
+            | .[] | "\(.severity)\t\(.name)\t\(.url)\t\(.title)"
+          ' audit.json > blocking.txt
+          if [ -s blocking.txt ]; then
+            echo "::error::High or critical advisories found:"
+            cat blocking.txt
+            exit 1
+          fi
+          echo "No blocking advisories (allowlisted: $ALLOWLIST)."
+
+  typecheck:
+    name: Type check
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - *checkout
+      - *setup-node
+      - *install
+      # next-env.d.ts and .next/types are gitignored, and a clean checkout has
+      # neither. Without them tsc still passes but skips the typed-route and
+      # PageProps/LayoutProps checks a local run (after any dev or build) gets.
+      - name: Generate Next.js route types
+        run: npx next typegen
+      - name: Run tsc
+        run: npm run typecheck
+
+  # Reviews the code against AGENTS.md with .skills/review-code.sh, comments
+  # the report on the PR, and fails on errors (warnings are OK).
+  code-review:
+    name: Review code against AGENTS.md
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write # Allow commenting on PRs
+      issues: write # Allow creating issues
+    steps:
+      - *checkout
+      - *setup-node
+      - *install
+
+      - name: Run code review script
+        id: review
+        run: |
+          bash .skills/review-code.sh
+
+          # Capture exit status
+          REVIEW_EXIT=$?
+
+          # Read the report
+          if [ -f code-review-report.md ]; then
+            echo "REPORT_EXISTS=true" >> $GITHUB_OUTPUT
+
+            # Extract summary stats
+            ERRORS=$(grep -oP 'Errors:\s*\*\*\K\d+' code-review-report.md || echo "0")
+            WARNINGS=$(grep -oP 'Warnings:\s*\*\*\K\d+' code-review-report.md || echo "0")
+
+            echo "ERRORS=$ERRORS" >> $GITHUB_OUTPUT
+            echo "WARNINGS=$WARNINGS" >> $GITHUB_OUTPUT
+
+            # Set job status based on errors (warnings are OK)
+            if [ "$ERRORS" -gt 0 ]; then
+              echo "STATUS=failure" >> $GITHUB_OUTPUT
+              exit 1
+            else
+              echo "STATUS=success" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "REPORT_EXISTS=false" >> $GITHUB_OUTPUT
+            echo "STATUS=failure" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Upload code review report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-review-report
+          path: code-review-report.md
+          retention-days: 30
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' && steps.review.outputs.REPORT_EXISTS == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('code-review-report.md', 'utf8');
+
+            // Add summary header
+            const errors = '${{ steps.review.outputs.ERRORS }}';
+            const warnings = '${{ steps.review.outputs.WARNINGS }}';
+
+            let emoji = '✅';
+            let status = 'All checks passed!';
+
+            if (errors > 0) {
+              emoji = '❌';
+              status = `Found ${errors} error(s)`;
+            } else if (warnings > 0) {
+              emoji = '⚠️';
+              status = `Found ${warnings} warning(s)`;
+            }
+
+            const comment = `## ${emoji} Code Review Results
+
+            **Status:** ${status}
+
+            <details>
+            <summary>📄 Full Report</summary>
+
+            ${report}
+
+            </details>
+
+            ---
+            *Review performed against [AGENTS.md](../blob/main/AGENTS.md) guidelines*
+            `;
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Code Review Results')
+            );
+
+            // Update or create comment
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+
+      - name: Set job summary
+        if: always() && steps.review.outputs.REPORT_EXISTS == 'true'
+        run: |
+          echo "# Code Review Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          ERRORS="${{ steps.review.outputs.ERRORS }}"
+          WARNINGS="${{ steps.review.outputs.WARNINGS }}"
+
+          if [ "$ERRORS" -eq 0 ] && [ "$WARNINGS" -eq 0 ]; then
+            echo "✅ **All checks passed!** Code is compliant with AGENTS.md" >> $GITHUB_STEP_SUMMARY
+          elif [ "$ERRORS" -gt 0 ]; then
+            echo "❌ **Found $ERRORS error(s) and $WARNINGS warning(s)**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Found $WARNINGS warning(s)**" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat code-review-report.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Fail if errors found
+        if: steps.review.outputs.ERRORS > 0
+        run: |
+          echo "::error::Code review found ${{ steps.review.outputs.ERRORS }} error(s). Please fix before merging."
+          exit 1
+
+  # React Doctor finds security, performance, correctness, accessibility,
+  # bundle-size, and architecture issues. On a PR it scans the changed files
+  # and posts a sticky summary listing only the new issues relative to the
+  # merge base; on main it tracks the health-score trend.
+  #
+  # Docs: https://www.react.doctor/ci
+  # Source: https://github.com/millionco/react-doctor
+  react-doctor:
+    name: react-doctor
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      statuses: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # The action sets up its own Node with a hardcoded default; hand it the
+      # project's version so it scans on the same runtime as every other job.
+      - name: Read .node-version
+        id: node
+        run: echo "version=$(cat .node-version)" >> "$GITHUB_OUTPUT"
+
+      - uses: millionco/react-doctor@v2
+        # Advisory by default: React Doctor reports findings on every PR — a
+        # sticky summary comment, inline review comments, and a commit status
+        # with the health score — but never fails the check, so it won't red-X
+        # a teammate's PR on day one. When your team trusts the signal, graduate
+        # the gate: add the commented keys below and set blocking to "error"
+        # (fail on new error-severity findings) or "warning" (fail on any finding).
+        # Full reference: https://www.react.doctor/ci
+        with:
+          node-version: ${{ steps.node.outputs.version }}
+        #   blocking: error          # Gate level: "none" (advisory, the default) | "warning" | "error"
+        #   scope: full              # On PRs, scan the whole project instead of just changed files
+        #   comment: false           # Disable the sticky PR summary comment
+        #   review-comments: false   # Disable inline review comments on changed lines
+        #   commit-status: false     # Disable the commit status (score + counts, links to the run)
+        #   version: "0.4.0"         # Pin to a specific react-doctor version instead of "latest"
+        #   directory: apps/web      # Scan a sub-directory (default: ".")
+        #   project: "web,admin"     # In a monorepo, scan specific workspace project(s)
+
+  playwright:
+    name: test
+    if: github.event_name != 'schedule'
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    # Run inside Playwright's official image: browsers and all OS dependencies
+    # are prebaked, so there is no `playwright install --with-deps` apt step to
+    # hang on. Pin the tag to the @playwright/test version in package.json
+    # (scaffold.yml pins the same image and must be bumped with it).
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
+      options: --user 1001
+    steps:
+      - *checkout
+      - *setup-node
+      - *install
+      - &build
+        name: Build Next.js app
+        run: npm run build
+      - name: Run Playwright tests
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  lighthouse:
+    name: lighthouse (${{ matrix.preset }})
+    if: github.event_name != 'schedule'
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    strategy:
+      # Report both, and let one fail without hiding the other's result.
+      fail-fast: false
+      matrix:
+        include:
+          - preset: mobile
+            config: ./lighthouserc.js
+          - preset: desktop
+            config: ./lighthouserc.desktop.js
+    steps:
+      - *checkout
+      - *setup-node
+      - *install
+      - *build
+      - name: Run Lighthouse CI
+        # Lighthouse CI starts the production server itself (startServerCommand)
+        # and asserts against the median of three runs. Thresholds and the
+        # reasoning behind them live in the config files.
+        run: npx --yes @lhci/cli@0.15.x autorun --config=${{ matrix.config }}
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: lighthouse-report-${{ matrix.preset }}
+          path: .lighthouseci/
+          retention-days: 30

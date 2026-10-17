@@ -2,11 +2,16 @@
 
 This directory contains automated workflows for the Next.js Boilerplate project.
 
+Every check runs as a job in a single workflow, `ci.yml`, which defines the shared
+site environment variables, checkout, Node setup (from `.node-version`) and
+`npm ci` steps once. The only exception is `scaffold.yml`, which stays separate
+because `.nextstarter/apply.mjs` deletes it from the projects it creates.
+
 ---
 
 ## Available Workflows
 
-### 1. ESLint (`eslint.yml`)
+### 1. ESLint (`ci.yml` → `eslint` job)
 
 **Purpose:** Runs ESLint scanning for code quality and security issues
 
@@ -22,7 +27,7 @@ This directory contains automated workflows for the Next.js Boilerplate project.
 
 ---
 
-### 2. Code Review (`code-review.yml`) ⭐ NEW
+### 2. Code Review (`ci.yml` → `code-review` job)
 
 **Purpose:** Automatically reviews code against AGENTS.md guidelines
 
@@ -62,7 +67,7 @@ This directory contains automated workflows for the Next.js Boilerplate project.
 - Every pull request targeting `main`
 
 **Manually:**
-- Go to "Actions" tab → "Code Review" → "Run workflow"
+- Go to "Actions" tab → "CI" → "Run workflow" (runs every job)
 
 ### What You'll See
 
@@ -144,7 +149,7 @@ To require code review to pass before merging:
 
 ### Adjusting Triggers
 
-Edit `.github/workflows/code-review.yml`:
+Edit the `on:` block of `.github/workflows/ci.yml` (it applies to every job):
 
 ```yaml
 on:
@@ -247,9 +252,14 @@ npm run lint
 
 | File | Purpose | Triggers |
 |------|---------|----------|
-| `eslint.yml` | Lint JavaScript/TypeScript | Push, PR, Weekly |
-| `code-review.yml` | Review against AGENTS.md | Push, PR, Manual |
-| `triggerVercelDeployment.yml` | Deploy to Vercel | Custom |
+| `ci.yml` → `eslint` | Lint JavaScript/TypeScript (SARIF) | Push, PR, Weekly, Manual |
+| `ci.yml` → `supply-chain` | Verify signatures, audit advisories | Push, PR, Weekly, Manual |
+| `ci.yml` → `typecheck` | `next typegen`, then `npm run typecheck` | Push, PR, Manual |
+| `ci.yml` → `code-review` | Review against AGENTS.md | Push, PR, Manual |
+| `ci.yml` → `react-doctor` | React Doctor scan | Push, PR |
+| `ci.yml` → `playwright` | Build and run Playwright tests | Push, PR, Manual |
+| `ci.yml` → `lighthouse` | Lighthouse CI, mobile and desktop | Push, PR, Manual |
+| `scaffold.yml` | Apply and test both starter modes | Push, PR |
 
 ---
 
