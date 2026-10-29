@@ -1,9 +1,12 @@
+import { githubUrl } from "./github";
 import { isUpsellEnabled } from "./upsell";
 import { siteUrl } from "./utils";
 
 const SITE_URL = siteUrl;
 const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME;
-const GITHUB_URL = "https://github.com/bill742/nextstarter-lite";
+// Empty when NEXT_PUBLIC_GITHUB_URL is unset. `undefined` rather than "" so
+// JSON.stringify drops `codeRepository` instead of publishing an empty URL.
+const GITHUB_URL = githubUrl || undefined;
 const NPM_URL = "https://www.npmjs.com/package/@bill742/create-nextstarter";
 const X_URL = "";
 

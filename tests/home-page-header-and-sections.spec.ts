@@ -3,6 +3,9 @@ import { expect, test } from "@playwright/test";
 /** Mirrors `isUpsellEnabled` — the `#pro` teaser only renders when it is set. */
 const upsellEnabled = Boolean(process.env.NEXT_PUBLIC_PRO_URL);
 
+/** Mirrors `githubUrl` — every GitHub link is hidden when it is blank. */
+const githubUrl = process.env.NEXT_PUBLIC_GITHUB_URL || "";
+
 test.describe("Home page header and navigation", () => {
   test("Verify header, h1 tag, and navigation are readable", async ({
     page,
@@ -132,6 +135,35 @@ test.describe("Home page navigation scroll behavior", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: /NextStarter Pro/ })
     ).toBeVisible();
+  });
+
+  test("GitHub links follow NEXT_PUBLIC_GITHUB_URL", async ({ page }) => {
+    // The hero star button, the Getting Started button, and the footer's two
+    // links all read the same flag, so they appear and disappear together.
+    const links = [
+      page
+        .locator("section#hero")
+        .getByRole("link", { name: /Star on GitHub/ }),
+      page
+        .locator("section#getting-started")
+        .getByRole("link", { name: "View on GitHub" }),
+      page
+        .getByRole("contentinfo")
+        .getByRole("link", { name: "GitHub Repository" }),
+      page
+        .getByRole("contentinfo")
+        .getByRole("link", { exact: true, name: "GitHub" }),
+    ];
+
+    for (const link of links) {
+      if (githubUrl) {
+        await expect(link).toHaveAttribute("href", githubUrl);
+        await expect(link).toHaveAttribute("target", "_blank");
+        await expect(link).toHaveAttribute("rel", /noopener/);
+      } else {
+        await expect(link).toHaveCount(0);
+      }
+    }
   });
 });
 

@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 
 import { hasUpdates } from "@/lib/changelog";
+import { docsPages } from "@/lib/docs";
 import { isUpsellEnabled } from "@/lib/upsell";
 import { siteUrl } from "@/lib/utils";
 
@@ -37,6 +38,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
       url: `${siteUrl}/ui-components`,
     },
+    // Ungated for the same reason; the blank starter deletes these too.
+    ...docsPages.map((page) => ({
+      changeFrequency: "monthly" as const,
+      lastModified: new Date(),
+      priority: 0.7,
+      url: `${siteUrl}${page.href}`,
+    })),
     {
       changeFrequency: "yearly",
       lastModified: new Date(),

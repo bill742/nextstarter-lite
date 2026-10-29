@@ -41,6 +41,11 @@ env:
   NEXT_PUBLIC_SITE_URL: https://www.nextstarter.app
   NEXT_PUBLIC_SITE_NAME: ${{ vars.NEXT_PUBLIC_SITE_NAME }}
   NEXT_PUBLIC_SITE_META_DESCRIPTION: ${{ vars.NEXT_PUBLIC_SITE_METADESCRIPTION }}
+  # The repository behind every GitHub link (hero star button, Getting Started,
+  # footer, structured data). A repo variable for the same reason as the Pro
+  # URL below: forks aren't pinned to this repository. Unset, the links are
+  # hidden and the spec asserts exactly that.
+  NEXT_PUBLIC_GITHUB_URL: ${{ vars.NEXT_PUBLIC_GITHUB_URL }}
   # Polar checkout link for the "Get NextStarter Pro" CTA. Kept as a repo
   # variable (Settings → Secrets and variables → Actions → Variables) rather
   # than hardcoded, so the link can change without a commit and forks of this

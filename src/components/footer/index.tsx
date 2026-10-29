@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { SiGithub } from "react-icons/si";
 
+import { githubUrl, isGithubEnabled } from "@/lib/github";
+
 import QuickLinks from "./quick-links";
 
 /**
@@ -44,20 +46,22 @@ const Footer = () => {
               Resources
             </h3>
             <ul className="space-y-2 text-sm">
-              <li>
-                <a
-                  href="https://github.com/bill742/nextstarter-lite"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-stone-600 transition-colors hover:text-orange-600 dark:text-stone-400 dark:hover:text-orange-400"
-                >
-                  <SiGithub
-                    className="h-4 w-4"
-                    aria-label="GitHub Repository"
-                  />
-                  GitHub Repository
-                </a>
-              </li>
+              {isGithubEnabled ? (
+                <li>
+                  <a
+                    href={githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-stone-600 transition-colors hover:text-orange-600 dark:text-stone-400 dark:hover:text-orange-400"
+                  >
+                    <SiGithub
+                      className="h-4 w-4"
+                      aria-label="GitHub Repository"
+                    />
+                    GitHub Repository
+                  </a>
+                </li>
+              ) : null}
               <li>
                 <a
                   href="https://nextjs.org/docs"
@@ -111,18 +115,20 @@ const Footer = () => {
               >
                 Privacy
               </Link>
-              <a
-                href="https://github.com/bill742/nextstarter-lite"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="transition-colors hover:text-orange-600 dark:hover:text-orange-400"
-                aria-label="GitHub"
-              >
-                <SiGithub
-                  className="h-5 w-5"
-                  aria-label="View project on GitHub"
-                />
-              </a>
+              {isGithubEnabled ? (
+                <a
+                  href={githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-orange-600 dark:hover:text-orange-400"
+                  aria-label="GitHub"
+                >
+                  <SiGithub
+                    className="h-5 w-5"
+                    aria-label="View project on GitHub"
+                  />
+                </a>
+              ) : null}
             </div>
           </div>
         </div>
