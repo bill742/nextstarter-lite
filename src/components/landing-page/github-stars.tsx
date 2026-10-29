@@ -61,12 +61,15 @@ const fetchStarCount = async (repo: string): Promise<number | null> => {
   }
 };
 
-/** Compact count, e.g. "1.2K". Fixed locale so the static HTML is stable. */
-const formatCount = (count: number) =>
-  new Intl.NumberFormat("en-GB", {
-    maximumFractionDigits: 1,
-    notation: "compact",
-  }).format(count);
+/**
+ * Compact count, e.g. "1.2K". Fixed locale so the static HTML is stable.
+ * Built once at module scope: constructing an `Intl.NumberFormat` is far more
+ * expensive than calling `format` on one.
+ */
+const countFormatter = new Intl.NumberFormat("en-GB", {
+  maximumFractionDigits: 1,
+  notation: "compact",
+});
 
 /**
  * A "Star on GitHub" button with the repository's star count, styled after
@@ -97,7 +100,7 @@ const GithubStars = async () => {
       </span>
       {count !== null ? (
         <span className="inline-flex items-center border-l border-stone-300 bg-stone-50 px-3 py-1.5 tabular-nums dark:border-stone-700 dark:bg-stone-800">
-          {formatCount(count)}
+          {countFormatter.format(count)}
           <span className="sr-only"> {count === 1 ? "star" : "stars"}</span>
         </span>
       ) : null}

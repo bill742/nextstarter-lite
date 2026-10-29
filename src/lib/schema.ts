@@ -95,7 +95,7 @@ export const softwareSchema = {
     license: "https://opensource.org/licenses/MIT",
     name: `${SITE_NAME} source code`,
     programmingLanguage: ["TypeScript", "JavaScript"],
-    runtimePlatform: "Node.js 22",
+    runtimePlatform: "Node.js 24",
   },
   license: "https://opensource.org/licenses/MIT",
   name: SITE_NAME,
@@ -132,7 +132,7 @@ export const softwareSchema = {
   // Matches .node-version and the README. Next.js 16 dropped Node 18 (its hard
   // floor is 20.9), so this is a factual claim search engines read — keep it in
   // step with the runtime the project actually supports.
-  softwareRequirements: "Node.js 22 or later",
+  softwareRequirements: "Node.js 24",
   url: SITE_URL,
 };
 

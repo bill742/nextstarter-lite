@@ -24,7 +24,7 @@ A modern Next.js boilerplate to ship production-ready projects fast — with Typ
 | Theming    | [next-themes](https://github.com/pacocoursey/next-themes)                                       |
 | Analytics  | [PostHog](https://posthog.com/) (cookieless, optional)                                          |
 | Testing    | [Playwright](https://playwright.dev/) + [Axe-core](https://github.com/dequelabs/axe-core)       |
-| Runtime    | Node.js 22                                                                                      |
+| Runtime    | Node.js 24                                                                                      |
 
 ---
 
@@ -133,7 +133,7 @@ foundation.
 
 ## Getting Started
 
-**Requirements:** Node.js 22+ (see `.node-version`)
+**Requirements:** Node.js 24 (see `.node-version`)
 
 ```bash
 npx @bill742/create-nextstarter my-project
