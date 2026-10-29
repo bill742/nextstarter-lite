@@ -100,7 +100,7 @@ export const faqSections: FaqSection[] = [
       },
       {
         answer:
-          "Node.js 22 or later, and a GitHub account to receive the repository. Every third-party service is optional, and each one has a generous free tier.",
+          "Node.js 24, and a GitHub account to receive the repository. Every third-party service is optional, and each one has a generous free tier.",
         id: "node-version",
         question: "What Node version do I need?",
       },

@@ -14,6 +14,23 @@ code — when something ships that a visitor would care about, it belongs in bot
 
 ### Added
 
+- `/docs`, documentation for the free starter: getting started, environment
+  variables, customization, analytics, testing and CI, and deployment. The
+  sidebar, page headings, metadata, and sitemap entries all read from
+  `src/lib/docs.ts`, and every page is scanned with Axe-core in both themes.
+  The Getting Started section on the home page now links to it, as does the
+  footer. The `full` starting point keeps the docs as example content; `blank`
+  removes them.
+- A "Star on GitHub" button in the home page hero, with the repository's star
+  count. The count is fetched from the GitHub API on the server and refreshed
+  daily, rather than through GitHub's embeddable button, so visitors' browsers
+  never contact GitHub. If the API is unreachable or rate limited, the button
+  renders without a count.
+- `NEXT_PUBLIC_GITHUB_URL` now drives every GitHub link: the hero star button,
+  the Getting Started button, the footer, the What's New and docs links, and
+  the structured data. Leave it blank and all of them are hidden, so a project
+  built from this starter no longer links to NextStarter's repository unless it
+  says so.
 - `/ui-components`, a live catalogue of the design system: the colour ramps and
   semantic tokens, the type scale, and every component in `src/components/ui`
   — Button, Card, Carousel, and Tooltip — in each variant, size, and state,

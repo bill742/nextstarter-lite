@@ -10,6 +10,7 @@ import {
   type UpdateEntry,
   type UpdateTag,
 } from "@/lib/changelog";
+import { githubUrl, isGithubEnabled } from "@/lib/github";
 import { isUpsellEnabled } from "@/lib/upsell";
 
 export const metadata: Metadata = {
@@ -159,17 +160,23 @@ const WhatsNew = () => {
             <p>
               The open-source starter — the landing page, the tooling, the
               tests, and the accessibility and performance work that runs on
-              every push. Every change below is public: the full commit history
-              lives in the{" "}
-              <a
-                className="underline transition-colors hover:text-orange-700 dark:hover:text-orange-400"
-                href="https://github.com/bill742/nextstarter-lite"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                GitHub repository
-              </a>
-              .
+              every push.
+              {isGithubEnabled ? (
+                <>
+                  {" "}
+                  Every change below is public: the full commit history lives in
+                  the{" "}
+                  <a
+                    className="underline transition-colors hover:text-orange-700 dark:hover:text-orange-400"
+                    href={githubUrl}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    GitHub repository
+                  </a>
+                  .
+                </>
+              ) : null}
             </p>
           </Timeline>
 

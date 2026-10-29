@@ -61,6 +61,14 @@ export const formatUpdateDate = (date: string): string =>
 /** Updates to this free starter, newest first. */
 export const liteUpdates: UpdateEntry[] = [
   {
+    date: "2026-10-29",
+    id: "docs",
+    summary:
+      "A new /docs section covers the free starter end to end: scaffolding a project, every environment variable, rebranding and replacing the example content, turning on cookieless analytics without the two settings that silently break it, the test suite and CI, and deployment. The home page's Getting Started section and the footer both link to it.",
+    tag: "Added",
+    title: "Documentation for the free starter",
+  },
+  {
     date: "2026-09-17",
     id: "ui-components",
     summary:

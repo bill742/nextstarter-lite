@@ -1,3 +1,4 @@
+import GithubStars from "./github-stars";
 import HeroCtas from "./hero-ctas";
 
 /**
@@ -49,6 +50,8 @@ const Hero = () => {
           </p>
 
           <HeroCtas />
+
+          <GithubStars />
 
           <p className="text-sm text-stone-600 dark:text-stone-400">
             MIT licensed · No sign up · One command to scaffold

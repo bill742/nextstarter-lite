@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SiGithub } from "react-icons/si";
 
 import { Button } from "@/components/ui/button";
+import { githubUrl, isGithubEnabled } from "@/lib/github";
 
 /**
  * Getting started guide component
@@ -90,33 +91,39 @@ const GettingStarted = () => {
               </li>
             </ol>
 
-            <p className="text-center">
-              Please refer to the documentation for more information.
+            <p className="text-center text-stone-600 dark:text-stone-300">
+              Please refer to the{" "}
+              <Link
+                className="font-medium text-stone-900 underline transition-colors hover:text-orange-700 dark:text-stone-100 dark:hover:text-orange-400"
+                href="/docs"
+              >
+                documentation
+              </Link>{" "}
+              for more information.
             </p>
 
-            <div className="flex items-center justify-center">
-              <Button
-                asChild
-                size="lg"
-                className="dark:to-coral-600 bg-linear-to-r from-orange-700 to-orange-600 pr-4 pl-4 font-bold text-white shadow-lg transition-[scale,box-shadow] hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] dark:from-orange-600"
-                aria-label="View on GitHub"
-              >
-                <Link
-                  href={
-                    process.env.NEXT_PUBLIC_GITHUB_URL ||
-                    "https://github.com/bill742/nextstarter-lite"
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
+            {isGithubEnabled ? (
+              <div className="flex items-center justify-center">
+                <Button
+                  asChild
+                  size="lg"
+                  className="dark:to-coral-600 bg-linear-to-r from-orange-700 to-orange-600 pr-4 pl-4 font-bold text-white shadow-lg transition-[scale,box-shadow] hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] dark:from-orange-600"
+                  aria-label="View on GitHub"
                 >
-                  <SiGithub
-                    className="mr-2 h-5 w-5"
-                    aria-label="View on GitHub"
-                  />
-                  View on GitHub
-                </Link>
-              </Button>
-            </div>
+                  <Link
+                    href={githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <SiGithub
+                      className="mr-2 h-5 w-5"
+                      aria-label="View on GitHub"
+                    />
+                    View on GitHub
+                  </Link>
+                </Button>
+              </div>
+            ) : null}
           </div>
         </div>
       </section>
