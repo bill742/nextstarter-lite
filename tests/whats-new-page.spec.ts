@@ -106,7 +106,10 @@ test.describe("What's New page", () => {
       .click();
     await expect(page).toHaveURL(/\/whats-new$/);
 
-    await page.goto("/");
+    // Not page.goto("/") again: in Firefox, a client-side navigation away from
+    // / followed by a goto back to / leaves Playwright waiting on a navigation
+    // that never finishes. See ui-components-page.spec.ts.
+    await page.goto("/privacy");
     await page
       .getByRole("contentinfo")
       .getByRole("link", { name: "What’s New" })

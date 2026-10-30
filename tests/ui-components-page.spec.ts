@@ -204,7 +204,10 @@ test.describe("UI Components page", () => {
     const sitemap = await (await request.get("/sitemap.xml")).text();
     expect(sitemap).toContain("/ui-components");
 
-    await page.goto("/");
+    // Starts from /privacy, not /. In Firefox, a client-side navigation away
+    // from / followed by page.goto("/") leaves Playwright waiting on a
+    // navigation that never finishes, so the next click times out.
+    await page.goto("/privacy");
     await page
       .getByRole("contentinfo")
       .getByRole("link", { name: "Components" })
