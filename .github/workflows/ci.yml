@@ -138,14 +138,15 @@ jobs:
       #
       # ALLOWLIST holds advisories with no patched release that cannot be
       # exploited here. Every other high or critical advisory still fails the
-      # job. Remove an entry as soon as a fix ships.
+      # job. Remove an entry as soon as a fix ships or the advisory is
+      # withdrawn. Format: space-separated GHSA ids, each with a comment here
+      # saying why it cannot be exploited.
       #
-      # - GHSA-vfj7-8cjw-p6xm (braces <=3.0.3, no fix yet): reached only via
-      #   @next/eslint-plugin-next -> fast-glob -> micromatch at lint time,
-      #   which expands the project's own glob patterns, never external input.
+      # Currently empty. (GHSA-vfj7-8cjw-p6xm, braces, was withdrawn by GitHub
+      # in October 2026 and no longer appears in npm audit.)
       - name: Audit for known vulnerabilities
         env:
-          ALLOWLIST: GHSA-vfj7-8cjw-p6xm
+          ALLOWLIST: ""
         run: |
           npm audit --json > audit.json || true
           jq -e '.vulnerabilities' audit.json > /dev/null || { cat audit.json; exit 1; }
