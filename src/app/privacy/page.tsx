@@ -132,8 +132,11 @@ const Privacy = () => {
                   &mdash; this site keeps no record of which country you read it
                   from. The lawful basis is legitimate interests: understanding
                   which pages people actually read, using the least identifying
-                  method available. Click tracking and session recording are
-                  both switched off.
+                  method available. Session recording is switched off, and so is
+                  general click tracking: the only click recorded is on the
+                  &ldquo;Get NextStarter Pro&rdquo; buy button, recorded the
+                  same way as a page view plus which of the page&rsquo;s two buy
+                  buttons was used.
                 </p>
                 <p>
                   PostHog acts as our processor under Article 28.{" "}

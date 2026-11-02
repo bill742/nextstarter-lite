@@ -56,7 +56,7 @@ const Hero = () => {
           </ul>
 
           <div className="flex flex-col items-center gap-4 pt-2">
-            <ProCta className="w-full sm:w-auto">
+            <ProCta className="w-full sm:w-auto" location="hero">
               Get NextStarter Pro — $199
             </ProCta>
             <p className="text-sm text-stone-600 dark:text-stone-400">
