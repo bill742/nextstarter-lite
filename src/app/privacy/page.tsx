@@ -6,6 +6,7 @@ import {
   posthogHost,
   posthogRegion,
 } from "@/lib/analytics";
+import { isEmailCaptureEnabled } from "@/lib/email-capture";
 import { privacyContactEmail } from "@/lib/privacy";
 import { isUpsellEnabled } from "@/lib/upsell";
 
@@ -15,7 +16,7 @@ import { isUpsellEnabled } from "@/lib/upsell";
  * rather than `new Date()`, which would claim the notice was revised today on
  * every single build.
  */
-const LAST_UPDATED = "27 August 2026";
+const LAST_UPDATED = "7 November 2026";
 
 export const metadata: Metadata = {
   alternates: {
@@ -98,7 +99,9 @@ const Privacy = () => {
                   : "Analytics is switched off entirely on this deployment."}
               </li>
               <li>
-                There are no forms, accounts, or newsletter sign-ups here.
+                {isEmailCaptureEnabled
+                  ? "There are no accounts here. The only form is the optional sign-up for updates, and it collects nothing but your email address."
+                  : "There are no forms, accounts, or newsletter sign-ups here."}
               </li>
               <li>
                 Nothing you do on this site is sold, shared with advertisers, or
@@ -137,6 +140,9 @@ const Privacy = () => {
                   &ldquo;Get NextStarter Pro&rdquo; buy button, recorded the
                   same way as a page view plus which of the page&rsquo;s two buy
                   buttons was used.
+                  {isEmailCaptureEnabled
+                    ? " Signing up for updates is counted the same way, along with which sign-up form you used; your email address is never sent to PostHog."
+                    : ""}
                 </p>
                 <p>
                   PostHog acts as our processor under Article 28.{" "}
@@ -231,6 +237,28 @@ const Privacy = () => {
                 The confirmation page you land on after paying is a static page.
                 It reads nothing from the address bar, so no order identifier is
                 ever passed on to analytics.
+              </p>
+            </Section>
+          ) : null}
+
+          {isEmailCaptureEnabled ? (
+            <Section id="updates" title="If you sign up for updates">
+              <p>
+                The sign-up form for NextStarter updates and the founding offer
+                collects your email address and nothing else. We use it only to
+                email you about NextStarter releases and offers, and the lawful
+                basis is your consent, which you give by submitting the form.
+              </p>
+              <p>
+                Addresses are stored with Resend, which sends those emails and
+                acts as our processor under Article 28. Resend is based in the
+                United States, so the transfer out of the UK relies on the
+                safeguards in its data processing agreement.
+              </p>
+              <p>
+                Every email has an unsubscribe link, and you can withdraw
+                consent at any time. Once you unsubscribe we stop emailing you,
+                and we delete your address on request.
               </p>
             </Section>
           ) : null}

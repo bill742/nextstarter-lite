@@ -1,3 +1,5 @@
+import EmailCapture from "@/components/email-capture";
+
 import Comparison from "./comparison";
 import Faq from "./faq";
 import FinalCta from "./final-cta";
@@ -34,6 +36,9 @@ const ProPage = () => {
       <Faq />
 
       <FinalCta />
+
+      {/* For readers who are not ready to buy: stay in touch instead. */}
+      <EmailCapture location="pro" />
     </>
   );
 };

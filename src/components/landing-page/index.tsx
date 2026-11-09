@@ -1,3 +1,5 @@
+import EmailCapture from "@/components/email-capture";
+
 import About from "./about";
 import Features from "./features";
 import GettingStarted from "./getting-started";
@@ -15,7 +17,9 @@ const LandingPage = () => {
     <>
       <ScrollTargetRestorer />
 
-      <Hero />
+      <Hero>
+        <EmailCapture compact location="home-hero" />
+      </Hero>
 
       <About />
 
@@ -26,6 +30,8 @@ const LandingPage = () => {
       <GettingStarted />
 
       <Upgrade />
+
+      <EmailCapture location="home" />
     </>
   );
 };

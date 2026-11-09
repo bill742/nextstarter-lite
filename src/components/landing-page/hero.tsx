@@ -15,9 +15,13 @@ import HeroCtas from "./hero-ctas";
  * of a scaffolded project. The only decoration is a CSS glow, which deletes in
  * one line.
  *
+ * @param children - Optional content under the CTAs and GitHub stars. The
+ *   marketing site passes its email capture here from `index.tsx` rather than
+ *   importing it, because this file survives into scaffolded projects and the
+ *   email capture does not.
  * @returns The landing page hero section.
  */
-const Hero = () => {
+const Hero = ({ children }: { children?: React.ReactNode }) => {
   return (
     <>
       <section
@@ -54,8 +58,10 @@ const Hero = () => {
           <GithubStars />
 
           <p className="text-sm text-stone-600 dark:text-stone-400">
-            MIT licensed · No sign up · One command to scaffold
+            MIT licensed · No account needed · One command to scaffold
           </p>
+
+          {children}
         </div>
       </section>
 
