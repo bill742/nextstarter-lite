@@ -22,6 +22,30 @@ import { isAnalyticsEnabled, posthogHost, posthogKey } from "@/lib/analytics";
  * privacy decision that should be readable at a glance. See `/privacy`, which
  * describes exactly this behaviour to visitors.
  */
+/**
+ * Replaces the value of every `token` query parameter with `redacted`, in
+ * every string at any depth of an event payload.
+ *
+ * @param value - A property value: string, array, object, or anything else.
+ * @returns The same shape with tokens blanked.
+ */
+const redactTokens = <T>(value: T): T => {
+  if (typeof value === "string") {
+    return (
+      value.includes("token=")
+        ? value.replace(/([?&#]token=)[^&#]*/g, "$1redacted")
+        : value
+    ) as T;
+  }
+  if (Array.isArray(value)) return value.map(redactTokens) as T;
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, inner]) => [key, redactTokens(inner)])
+    ) as T;
+  }
+  return value;
+};
+
 if (isAnalyticsEnabled) {
   posthog.init(posthogKey, {
     // EU Cloud. UK adequacy regulations cover UK→EEA transfers, which keeps
@@ -32,6 +56,21 @@ if (isAnalyticsEnabled) {
     // site needs to answer "which pages get read". Flip to `true` if you want
     // click data and your privacy notice says so.
     autocapture: false,
+    /*
+     * Page URLs are recorded with their query strings, and a one-time link
+     * can carry a secret there (the email-confirmation link does, as
+     * `?token=`). Blank any `token` parameter everywhere in the event before
+     * it leaves the browser — the properties and the person properties
+     * PostHog sends alongside them, such as `$initial_current_url` — so such
+     * links never land in analytics. Harmless on a site with no such links.
+     */
+    before_send: (event) => {
+      if (!event) return event;
+      event.properties = redactTokens(event.properties);
+      if (event.$set) event.$set = redactTokens(event.$set);
+      if (event.$set_once) event.$set_once = redactTokens(event.$set_once);
+      return event;
+    },
     capture_pageleave: "if_capture_pageview",
     // App Router navigations are history changes, not document loads.
     capture_pageview: "history_change",
