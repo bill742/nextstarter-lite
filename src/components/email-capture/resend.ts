@@ -39,32 +39,71 @@ const resend = (
  * global in Resend, so neither path creates a duplicate.
  *
  * @param email - The confirmed, normalised address.
- * @returns Whether the address is now in the Segment.
+ * @returns `"created"` for a brand-new Contact, `"existing"` when a Contact
+ *   for the address was already there, or `null` when Resend refused.
  */
-export const addToSegment = async (email: string) => {
+export const addToSegment = async (
+  email: string
+): Promise<"created" | "existing" | null> => {
   const created = await resend("/contacts", {
     email,
     segments: [{ id: resendSegmentId }],
     unsubscribed: false,
   });
-  if (created.ok) return true;
+  if (created.ok) return "created";
 
   if (created.status === 409 || created.status === 422) {
     const added = await resend(
       `/contacts/${encodeURIComponent(email)}/segments/${resendSegmentId}`
     );
-    if (added.ok) return true;
+    if (added.ok) return "existing";
     // eslint-disable-next-line no-console
     console.error(
       "Resend refused to add a contact to the segment",
       added.status
     );
-    return false;
+    return null;
   }
 
   // eslint-disable-next-line no-console
   console.error("Resend refused to create a contact", created.status);
-  return false;
+  return null;
+};
+
+/**
+ * The event Resend Automations listen for to send the welcome email. Set the
+ * automation's trigger to exactly this name.
+ */
+export const CONFIRMED_EVENT = "updates.confirmed";
+
+/**
+ * Tells Resend that an address has just confirmed, so a Resend Automation
+ * can send the welcome email (and anything after it).
+ *
+ * The welcome email itself is a published Template in Resend, not code in
+ * this repo: the copy, and any founder code in it, change in Resend's editor
+ * without a deploy, and the code stays out of this public repository.
+ *
+ * Best effort: a failure is logged and swallowed, because the visitor is
+ * already on the list and a missed welcome email should not tell them
+ * otherwise.
+ *
+ * @param email - The confirmed, normalised address.
+ */
+export const sendConfirmedEvent = async (email: string) => {
+  try {
+    const response = await resend("/events/send", {
+      email,
+      event: CONFIRMED_EVENT,
+    });
+    if (!response.ok) {
+      // eslint-disable-next-line no-console
+      console.error("Resend refused the confirmed event", response.status);
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("Sending the confirmed event failed", error);
+  }
 };
 
 /**

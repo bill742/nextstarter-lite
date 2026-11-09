@@ -3,7 +3,7 @@
 import { isEmailCaptureEnabled } from "@/lib/email-capture";
 
 import { botReason } from "./bot-check";
-import { addToSegment, sendConfirmation } from "./resend";
+import { addToSegment, sendConfirmation, sendConfirmedEvent } from "./resend";
 import { openEmail } from "./token";
 
 /** What a form shows after a submission. */
@@ -101,6 +101,11 @@ export const joinUpdates = async (
  * scanners open links in incoming email to check them; confirming on a plain
  * GET would let a scanner subscribe someone who never clicked.
  *
+ * A newly created Contact also triggers the `updates.confirmed` event, which
+ * a Resend Automation turns into the welcome email. Only new Contacts: a
+ * second click on the same link, or an address already in Resend for another
+ * reason, must not get the welcome email again.
+ *
  * @param _previous - The previous form state (unused; required by `useActionState`).
  * @param formData - The confirm form, carrying the link's `token`.
  * @returns The state for the confirm page to render.
@@ -123,7 +128,11 @@ export const confirmUpdates = async (
   }
 
   try {
-    if (await addToSegment(email)) return { status: "success" };
+    const added = await addToSegment(email);
+    if (added) {
+      if (added === "created") await sendConfirmedEvent(email);
+      return { status: "success" };
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error("Email confirmation failed", error);
