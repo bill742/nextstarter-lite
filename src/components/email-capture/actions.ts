@@ -101,10 +101,11 @@ export const joinUpdates = async (
  * scanners open links in incoming email to check them; confirming on a plain
  * GET would let a scanner subscribe someone who never clicked.
  *
- * A newly created Contact also triggers the `updates.confirmed` event, which
- * a Resend Automation turns into the welcome email. Only new Contacts: a
- * second click on the same link, or an address already in Resend for another
- * reason, must not get the welcome email again.
+ * A newly created Contact, or a returning one who had unsubscribed, also
+ * triggers the `updates.confirmed` event, which a Resend Automation turns
+ * into the welcome email (and so the founding offer). An address that is
+ * already subscribed does not: a second click on the same link must not send
+ * the welcome email again.
  *
  * @param _previous - The previous form state (unused; required by `useActionState`).
  * @param formData - The confirm form, carrying the link's `token`.
@@ -130,7 +131,9 @@ export const confirmUpdates = async (
   try {
     const added = await addToSegment(email);
     if (added) {
-      if (added === "created") await sendConfirmedEvent(email);
+      if (added === "created" || added === "rejoined") {
+        await sendConfirmedEvent(email);
+      }
       return { status: "success" };
     }
   } catch (error) {
