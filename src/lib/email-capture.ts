@@ -9,33 +9,51 @@ import { isUpsellEnabled } from "@/lib/upsell";
  * things keep it out of anyone else's project:
  *
  * - It rides on the upsell flag. With no `NEXT_PUBLIC_PRO_URL` the form never
- *   renders and the server action refuses every submission, even if the
- *   Resend keys are present.
- * - `.nextstarter/manifest.json` deletes the form and its server action when a
- *   project is scaffolded, so the component never ships in the template.
+ *   renders and both server actions refuse every submission, even if the
+ *   Resend settings are present.
+ * - `.nextstarter/manifest.json` deletes the form, its server actions, and the
+ *   `/updates/confirm` route when a project is scaffolded, so none of it ships
+ *   in the template.
  *
  * This file stays behind in scaffolded projects only because `/privacy` reads
  * it to decide whether to describe sign-ups. There, it always evaluates false.
  *
- * Signups are stored as Resend Contacts in one Segment (what Resend called an
- * Audience before November 2025), so the list can be emailed from Resend's
- * Broadcasts at launch without running a database.
+ * Sign-up is double opt-in. Submitting the form only sends a confirmation
+ * email; the address becomes a Resend Contact in one Segment (what Resend
+ * called an Audience before November 2025) when its owner clicks through.
+ * Nothing is stored before then, so there is no database to run.
  *
- * The keys are server-only on purpose: nothing here may reach the client
- * bundle. Read these values from server components and server actions only.
+ * Every value here is server-only on purpose: nothing may reach the client
+ * bundle. Read them from server components and server actions only.
  */
 
-/** Resend API key with access to Contacts. Server-only. */
+/** Resend API key with access to Contacts and Emails. */
 export const resendApiKey = process.env.RESEND_API_KEY || "";
 
-/** The Resend Segment that new contacts are added to. Server-only. */
+/** The Resend Segment that confirmed contacts are added to. */
 export const resendSegmentId = process.env.RESEND_SEGMENT_ID || "";
+
+/**
+ * Sender for the confirmation email, on a domain verified in Resend, e.g.
+ * `NextStarter <updates@nextstarter.app>`.
+ */
+export const resendFrom = process.env.RESEND_FROM || "";
+
+/**
+ * Secret that encrypts the confirmation link's token. Anyone holding it could
+ * mint links that add arbitrary addresses, so it gets a minimum length.
+ */
+export const emailConfirmSecret = process.env.EMAIL_CONFIRM_SECRET || "";
 
 /**
  * Whether the email capture is live on this deployment.
  *
- * Fails closed: missing any of the three values switches the whole surface
- * off rather than showing a form that silently drops emails.
+ * Fails closed: missing any value switches the whole surface off rather than
+ * showing a form that cannot send its confirmation email.
  */
 export const isEmailCaptureEnabled =
-  isUpsellEnabled && resendApiKey.length > 0 && resendSegmentId.length > 0;
+  isUpsellEnabled &&
+  resendApiKey.length > 0 &&
+  resendSegmentId.length > 0 &&
+  resendFrom.length > 0 &&
+  emailConfirmSecret.length >= 32;

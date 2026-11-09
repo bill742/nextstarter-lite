@@ -1,12 +1,13 @@
 "use client";
 
 import posthog from "posthog-js";
-import { useActionState, useEffect, useId } from "react";
+import { useActionState, useEffect, useId, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { isAnalyticsEnabled } from "@/lib/analytics";
 
 import { type EmailCaptureState, joinUpdates } from "./actions";
+import { HONEYPOT_FIELD, TIMING_FIELD } from "./bot-check";
 
 /**
  * Where on the site the form sits, sent with the signup event. The home page
@@ -26,6 +27,10 @@ const initialState: EmailCaptureState = { status: "idle" };
  * field keeps the browser's own `type="email"` check as the first line of
  * validation.
  *
+ * It also carries two quiet bot checks, read by `joinUpdates` (see
+ * `bot-check.ts`): an off-screen field people never see or fill in, and how
+ * long the form was on screen before it was sent.
+ *
  * @param location - Which page the form is on, for analytics.
  * @returns The signup form.
  */
@@ -37,25 +42,31 @@ const EmailCaptureForm = ({ location }: { location: EmailCaptureLocation }) => {
   const id = useId();
   const inputId = `${id}-email`;
   const statusId = `${id}-status`;
+  const honeypotId = `${id}-${HONEYPOT_FIELD}`;
+  const mountedAt = useRef<number | null>(null);
 
   useEffect(() => {
-    // Only new signups count toward the funnel; the address itself is never
-    // sent — just the fact of a signup and which page it came from.
+    mountedAt.current = Date.now();
+  }, []);
+
+  useEffect(() => {
+    // Counts form submissions, not confirmed subscribers — those are
+    // `email_confirmed`, sent from /updates/confirm. The address itself is
+    // never sent, just the fact of a signup and which form it came from.
     if (state.status === "success" && isAnalyticsEnabled) {
       posthog.capture("email_signup", { location });
     }
   }, [state, location]);
 
-  if (state.status === "success" || state.status === "already") {
+  if (state.status === "success") {
     return (
       <p
         aria-live="polite"
         className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-200"
         role="status"
       >
-        {state.status === "success"
-          ? "You’re on the list. We’ll email you when there’s news — and before the founding offer closes."
-          : "You’re already on the list — we’ll be in touch."}
+        Almost there &mdash; check your inbox for a link to confirm your email.
+        Nothing is added to the list until you click it.
       </p>
     );
   }
@@ -63,7 +74,36 @@ const EmailCaptureForm = ({ location }: { location: EmailCaptureLocation }) => {
   const hasError = state.status === "error";
 
   return (
-    <form action={formAction} className="w-full">
+    <form
+      action={formAction}
+      className="relative w-full"
+      onSubmit={(event) => {
+        // Measured on the visitor's own clock, so server clock skew cannot
+        // matter. Without JavaScript the field stays empty and only the
+        // honeypot applies.
+        const field = event.currentTarget.elements.namedItem(TIMING_FIELD);
+        if (field instanceof HTMLInputElement && mountedAt.current !== null) {
+          field.value = String(Date.now() - mountedAt.current);
+        }
+      }}
+    >
+      <input name={TIMING_FIELD} type="hidden" />
+      {/* Honeypot. Off screen rather than display:none, which many bots skip;
+          hidden from assistive tech and out of the tab order, so people never
+          meet it. Autofill is off so browsers do not fill it in either. */}
+      <div
+        aria-hidden="true"
+        className="absolute left-[-9999px] h-px w-px overflow-hidden"
+      >
+        <label htmlFor={honeypotId}>Leave this field empty</label>
+        <input
+          autoComplete="off"
+          id={honeypotId}
+          name={HONEYPOT_FIELD}
+          tabIndex={-1}
+          type="text"
+        />
+      </div>
       <label
         className="block text-left text-sm font-medium text-stone-900 dark:text-stone-100"
         htmlFor={inputId}

@@ -141,7 +141,7 @@ const Privacy = () => {
                   same way as a page view plus which of the page&rsquo;s two buy
                   buttons was used.
                   {isEmailCaptureEnabled
-                    ? " Signing up for updates is counted the same way, along with which sign-up form you used; your email address is never sent to PostHog."
+                    ? " Signing up for updates and confirming your email are each counted the same way, along with which sign-up form you used; your email address is never sent to PostHog."
                     : ""}
                 </p>
                 <p>
@@ -245,9 +245,16 @@ const Privacy = () => {
             <Section id="updates" title="If you sign up for updates">
               <p>
                 The sign-up form for NextStarter updates and the founding offer
-                collects your email address and nothing else. We use it only to
-                email you about NextStarter releases and offers, and the lawful
-                basis is your consent, which you give by submitting the form.
+                collects your email address and nothing else. Submitting it
+                sends one email asking you to confirm; you are added to the list
+                only when you click the link in it. If you never do, we keep
+                nothing beyond the record of that one email in our email
+                provider&rsquo;s sending log.
+              </p>
+              <p>
+                Once you confirm, we use your address only to email you about
+                NextStarter releases and offers. The lawful basis is your
+                consent, which you give by confirming.
               </p>
               <p>
                 Addresses are stored with Resend, which sends those emails and

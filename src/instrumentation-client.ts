@@ -32,6 +32,25 @@ if (isAnalyticsEnabled) {
     // site needs to answer "which pages get read". Flip to `true` if you want
     // click data and your privacy notice says so.
     autocapture: false,
+    /*
+     * Page URLs are recorded with their query strings, and a one-time link
+     * can carry a secret there (the email-confirmation link does, as
+     * `?token=`). Blank any `token` parameter in every string property
+     * before the event leaves the browser, so such links never land in
+     * analytics. Harmless on a site that has no such links.
+     */
+    before_send: (event) => {
+      if (!event?.properties) return event;
+      for (const [key, value] of Object.entries(event.properties)) {
+        if (typeof value === "string" && value.includes("token=")) {
+          event.properties[key] = value.replace(
+            /([?&]token=)[^&#]*/g,
+            "$1redacted"
+          );
+        }
+      }
+      return event;
+    },
     capture_pageleave: "if_capture_pageview",
     // App Router navigations are history changes, not document loads.
     capture_pageview: "history_change",

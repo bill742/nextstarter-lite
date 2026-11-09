@@ -15,6 +15,7 @@
         "src/components/landing-page/upgrade.tsx",
         "src/components/email-capture",
         "src/app/whats-new/layout.tsx",
+        "src/app/updates",
         "src/lib/faq.ts",
         "tests/pro-page.spec.ts",
         "tests/thanks-page.spec.ts",
