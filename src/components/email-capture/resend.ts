@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { resendApiKey, resendFrom, resendSegmentId } from "@/lib/email-capture";
 import { siteUrl } from "@/lib/utils";
 
-import { sealEmail } from "./token";
+import { RESUBSCRIBE_TTL_MS, sealEmail } from "./token";
 
 const RESEND_API = "https://api.resend.com";
 
@@ -13,13 +13,19 @@ const RESEND_API = "https://api.resend.com";
  *
  * @param path - API path, starting with `/`.
  * @param body - Optional JSON body.
- * @param headers - Extra request headers.
+ * @param options - Extra request headers, and the method (POST by default).
  * @returns The raw response.
  */
 const resend = (
   path: string,
   body?: unknown,
-  headers: Record<string, string> = {}
+  {
+    headers = {},
+    method = "POST",
+  }: {
+    headers?: Record<string, string>;
+    method?: "GET" | "PATCH" | "POST";
+  } = {}
 ) =>
   fetch(`${RESEND_API}${path}`, {
     body: body === undefined ? undefined : JSON.stringify(body),
@@ -28,8 +34,21 @@ const resend = (
       "Content-Type": "application/json",
       ...headers,
     },
-    method: "POST",
+    method,
   });
+
+/**
+ * Whether an existing Contact is globally unsubscribed.
+ *
+ * @param contactPath - `/contacts/<encoded email>`.
+ * @returns `true` or `false`, or `null` when Resend could not say.
+ */
+const isUnsubscribed = async (contactPath: string) => {
+  const response = await resend(contactPath, undefined, { method: "GET" });
+  if (!response.ok) return null;
+  const contact = (await response.json()) as { unsubscribed?: unknown };
+  return contact.unsubscribed === true;
+};
 
 /**
  * Adds a confirmed address to the updates Segment.
@@ -38,13 +57,24 @@ const resend = (
  * added another way) — adds the existing Contact to the Segment. Contacts are
  * global in Resend, so neither path creates a duplicate.
  *
+ * An existing Contact who had unsubscribed is resubscribed. Confirming is a
+ * fresh, explicit opt-in, and without this they would be told they are on
+ * the list while Resend went on suppressing every email to them. That only
+ * happens with a link issued within {@link RESUBSCRIBE_TTL_MS}, so an old
+ * link cannot overrule an unsubscribe that came after it.
+ *
  * @param email - The confirmed, normalised address.
- * @returns `"created"` for a brand-new Contact, `"existing"` when a Contact
- *   for the address was already there, or `null` when Resend refused.
+ * @param issuedAt - When the confirmation link was issued (epoch ms).
+ * @returns `"created"` for a brand-new Contact, `"rejoined"` for one who had
+ *   unsubscribed and is now subscribed again, `"existing"` for one who was
+ *   already subscribed, `"stale"` for an unsubscribed one whose link is too
+ *   old to resubscribe them (nothing is changed), or `null` when Resend
+ *   refused.
  */
 export const addToSegment = async (
-  email: string
-): Promise<"created" | "existing" | null> => {
+  email: string,
+  issuedAt: number
+): Promise<"created" | "rejoined" | "existing" | "stale" | null> => {
   const created = await resend("/contacts", {
     email,
     segments: [{ id: resendSegmentId }],
@@ -53,14 +83,47 @@ export const addToSegment = async (
   if (created.ok) return "created";
 
   if (created.status === 409 || created.status === 422) {
-    const added = await resend(
-      `/contacts/${encodeURIComponent(email)}/segments/${resendSegmentId}`
+    const contactPath = `/contacts/${encodeURIComponent(email)}`;
+
+    // Read before writing: "was unsubscribed" is what tells a returning
+    // subscriber apart from a second click on the same confirmation link.
+    // If Resend cannot say, carry on as if subscribed rather than fail.
+    const wasUnsubscribed = await isUnsubscribed(contactPath);
+    if (wasUnsubscribed === null) {
+      // eslint-disable-next-line no-console
+      console.error("Resend could not report a contact's subscription status");
+    }
+
+    // Checked before anything is written, so a stale link changes nothing.
+    if (wasUnsubscribed && Date.now() - issuedAt > RESUBSCRIBE_TTL_MS) {
+      return "stale";
+    }
+
+    const added = await resend(`${contactPath}/segments/${resendSegmentId}`);
+    if (!added.ok) {
+      // eslint-disable-next-line no-console
+      console.error(
+        "Resend refused to add a contact to the segment",
+        added.status
+      );
+      return null;
+    }
+
+    if (!wasUnsubscribed) return "existing";
+
+    const resubscribed = await resend(
+      contactPath,
+      { unsubscribed: false },
+      { method: "PATCH" }
     );
-    if (added.ok) return "existing";
+    if (resubscribed.ok) return "rejoined";
+
+    // Report failure, so the visitor is asked to try again instead of being
+    // told they are on a list that will never reach them.
     // eslint-disable-next-line no-console
     console.error(
-      "Resend refused to add a contact to the segment",
-      added.status
+      "Resend refused to resubscribe a contact",
+      resubscribed.status
     );
     return null;
   }
@@ -155,7 +218,7 @@ export const sendConfirmation = async (email: string) => {
       ].join("\n"),
       to: [email],
     },
-    { "Idempotency-Key": `updates-confirm/${addressHash}/${hour}` }
+    { headers: { "Idempotency-Key": `updates-confirm/${addressHash}/${hour}` } }
   );
 
   if (response.ok || response.status === 409) return true;

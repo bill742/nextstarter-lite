@@ -4,7 +4,7 @@ import { isEmailCaptureEnabled } from "@/lib/email-capture";
 
 import { botReason } from "./bot-check";
 import { addToSegment, sendConfirmation, sendConfirmedEvent } from "./resend";
-import { openEmail } from "./token";
+import { openToken } from "./token";
 
 /** What a form shows after a submission. */
 export interface EmailCaptureState {
@@ -101,10 +101,11 @@ export const joinUpdates = async (
  * scanners open links in incoming email to check them; confirming on a plain
  * GET would let a scanner subscribe someone who never clicked.
  *
- * A newly created Contact also triggers the `updates.confirmed` event, which
- * a Resend Automation turns into the welcome email. Only new Contacts: a
- * second click on the same link, or an address already in Resend for another
- * reason, must not get the welcome email again.
+ * A newly created Contact, or a returning one who had unsubscribed, also
+ * triggers the `updates.confirmed` event, which a Resend Automation turns
+ * into the welcome email (and so the founding offer). An address that is
+ * already subscribed does not: a second click on the same link must not send
+ * the welcome email again.
  *
  * @param _previous - The previous form state (unused; required by `useActionState`).
  * @param formData - The confirm form, carrying the link's `token`.
@@ -117,9 +118,9 @@ export const confirmUpdates = async (
   if (!isEmailCaptureEnabled) return CLOSED;
 
   const token = formData.get("token");
-  const email = typeof token === "string" ? openEmail(token) : null;
+  const opened = typeof token === "string" ? openToken(token) : null;
 
-  if (!email) {
+  if (!opened) {
     return {
       message:
         "This confirmation link has expired or is not valid. Sign up again to get a new one.",
@@ -128,9 +129,21 @@ export const confirmUpdates = async (
   }
 
   try {
-    const added = await addToSegment(email);
+    const { email, issuedAt } = opened;
+    const added = await addToSegment(email, issuedAt);
+
+    if (added === "stale") {
+      return {
+        message:
+          "This address unsubscribed, and rejoining needs a link less than an hour old. Sign up again and use the new link we send.",
+        status: "error",
+      };
+    }
+
     if (added) {
-      if (added === "created") await sendConfirmedEvent(email);
+      if (added === "created" || added === "rejoined") {
+        await sendConfirmedEvent(email);
+      }
       return { status: "success" };
     }
   } catch (error) {
