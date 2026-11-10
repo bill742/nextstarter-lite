@@ -10,6 +10,18 @@ import { emailConfirmSecret } from "@/lib/email-capture";
 /** How long a confirmation link works. */
 export const CONFIRM_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
+/**
+ * How fresh a link must be to resubscribe someone who unsubscribed.
+ *
+ * Much shorter than {@link CONFIRM_TTL_MS} on purpose. Links are not
+ * single-use, so without this, a week-old link — clicked again by mistake,
+ * or forwarded to someone else — could quietly overrule an unsubscribe that
+ * came after it. A link issued within the hour can only be one the person
+ * asked for after unsubscribing (give or take an unsubscribe within the same
+ * hour as signing up).
+ */
+export const RESUBSCRIBE_TTL_MS = 60 * 60 * 1000;
+
 const IV_BYTES = 12;
 const TAG_BYTES = 16;
 
@@ -41,10 +53,13 @@ export const sealEmail = (email: string) => {
  * Opens a confirmation token.
  *
  * @param token - The token from the link.
- * @returns The email address, or `null` when the token is malformed, forged,
- *   or older than {@link CONFIRM_TTL_MS}.
+ * @returns The email address and when the link was issued (epoch ms), or
+ *   `null` when the token is malformed, forged, or older than
+ *   {@link CONFIRM_TTL_MS}.
  */
-export const openEmail = (token: string): string | null => {
+export const openToken = (
+  token: string
+): { email: string; issuedAt: number } | null => {
   try {
     const raw = Buffer.from(token, "base64url");
     if (raw.length <= IV_BYTES + TAG_BYTES) return null;
@@ -65,8 +80,16 @@ export const openEmail = (token: string): string | null => {
     // A minute of grace for clock skew between server instances.
     if (Date.now() - t > CONFIRM_TTL_MS || t > Date.now() + 60_000) return null;
 
-    return e;
+    return { email: e, issuedAt: t };
   } catch {
     return null;
   }
 };
+
+/**
+ * Opens a confirmation token for display only.
+ *
+ * @param token - The token from the link.
+ * @returns The email address, or `null` as for {@link openToken}.
+ */
+export const openEmail = (token: string) => openToken(token)?.email ?? null;

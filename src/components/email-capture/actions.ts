@@ -4,7 +4,7 @@ import { isEmailCaptureEnabled } from "@/lib/email-capture";
 
 import { botReason } from "./bot-check";
 import { addToSegment, sendConfirmation, sendConfirmedEvent } from "./resend";
-import { openEmail } from "./token";
+import { openToken } from "./token";
 
 /** What a form shows after a submission. */
 export interface EmailCaptureState {
@@ -118,9 +118,9 @@ export const confirmUpdates = async (
   if (!isEmailCaptureEnabled) return CLOSED;
 
   const token = formData.get("token");
-  const email = typeof token === "string" ? openEmail(token) : null;
+  const opened = typeof token === "string" ? openToken(token) : null;
 
-  if (!email) {
+  if (!opened) {
     return {
       message:
         "This confirmation link has expired or is not valid. Sign up again to get a new one.",
@@ -129,7 +129,17 @@ export const confirmUpdates = async (
   }
 
   try {
-    const added = await addToSegment(email);
+    const { email, issuedAt } = opened;
+    const added = await addToSegment(email, issuedAt);
+
+    if (added === "stale") {
+      return {
+        message:
+          "This address unsubscribed, and rejoining needs a link less than an hour old. Sign up again and use the new link we send.",
+        status: "error",
+      };
+    }
+
     if (added) {
       if (added === "created" || added === "rejoined") {
         await sendConfirmedEvent(email);

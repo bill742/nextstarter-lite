@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { resendApiKey, resendFrom, resendSegmentId } from "@/lib/email-capture";
 import { siteUrl } from "@/lib/utils";
 
-import { sealEmail } from "./token";
+import { RESUBSCRIBE_TTL_MS, sealEmail } from "./token";
 
 const RESEND_API = "https://api.resend.com";
 
@@ -59,16 +59,22 @@ const isUnsubscribed = async (contactPath: string) => {
  *
  * An existing Contact who had unsubscribed is resubscribed. Confirming is a
  * fresh, explicit opt-in, and without this they would be told they are on
- * the list while Resend went on suppressing every email to them.
+ * the list while Resend went on suppressing every email to them. That only
+ * happens with a link issued within {@link RESUBSCRIBE_TTL_MS}, so an old
+ * link cannot overrule an unsubscribe that came after it.
  *
  * @param email - The confirmed, normalised address.
+ * @param issuedAt - When the confirmation link was issued (epoch ms).
  * @returns `"created"` for a brand-new Contact, `"rejoined"` for one who had
  *   unsubscribed and is now subscribed again, `"existing"` for one who was
- *   already subscribed, or `null` when Resend refused.
+ *   already subscribed, `"stale"` for an unsubscribed one whose link is too
+ *   old to resubscribe them (nothing is changed), or `null` when Resend
+ *   refused.
  */
 export const addToSegment = async (
-  email: string
-): Promise<"created" | "rejoined" | "existing" | null> => {
+  email: string,
+  issuedAt: number
+): Promise<"created" | "rejoined" | "existing" | "stale" | null> => {
   const created = await resend("/contacts", {
     email,
     segments: [{ id: resendSegmentId }],
@@ -86,6 +92,11 @@ export const addToSegment = async (
     if (wasUnsubscribed === null) {
       // eslint-disable-next-line no-console
       console.error("Resend could not report a contact's subscription status");
+    }
+
+    // Checked before anything is written, so a stale link changes nothing.
+    if (wasUnsubscribed && Date.now() - issuedAt > RESUBSCRIBE_TTL_MS) {
+      return "stale";
     }
 
     const added = await resend(`${contactPath}/segments/${resendSegmentId}`);
